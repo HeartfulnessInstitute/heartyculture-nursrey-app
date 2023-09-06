@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../modules/plant_module.dart';
@@ -117,10 +120,16 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
   }
 
   Widget listChild(int index) {
+    List<String> nameList = plantsList[index].name.toString().split('|');
+    Uint8List? bytes;
+    double radius = MediaQuery.of(context).size.height*.03;
+    if(plantsList[index].image256 is String && plantsList[index].image256.isNotEmpty) {
+      bytes = base64.decode(plantsList[index].image256);
+    }
     return InkWell(
       onTap: (){
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (context)=>const PlantScreen())
+          MaterialPageRoute(builder: (context)=>PlantScreen(plantId:plantsList[index].id.toString()))
         );
       },
       child: Card(
@@ -129,11 +138,21 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
           children: [
             Container(
               margin: const EdgeInsets.all(12),
-              child: CircleAvatar(
-                  radius: 26, // Image radius
-                  backgroundColor: Theme.of(context).primaryColor,
-                  backgroundImage: const NetworkImage(
-                      'https://www.ugaoo.com/cdn/shop/products/ajwain-plant-32220864446596.jpg')),
+              child: bytes == null
+                  ? CircleAvatar(
+                      radius: radius, // Image radius
+                      backgroundColor: Theme.of(context).primaryColor,
+                      backgroundImage: const NetworkImage(
+                          'https://www.ugaoo.com/cdn/shop/products/ajwain-plant-32220864446596.jpg'))
+                  : ClipOval(
+                      child: Image.memory(
+                        // Decode the base64 string into Uint8List
+                        bytes,
+                        width: radius*2, // Set the desired width
+                        height: radius*2, // Set the desired height
+                        fit: BoxFit.cover, // Adjust this to your needs
+                      ),
+                    ),
             ),
             Expanded(
               child: Column(
@@ -141,7 +160,7 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
               Text(
-                plantsList[index].name.toString(),
+                nameList[0].trim(),
                 style: GoogleFonts.nunito(
                     textStyle: const TextStyle(
                   fontSize: 18,
@@ -150,7 +169,7 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
                 )),
               ),
               Text(
-                "Acrocarpus Fraxinifolius",
+                  nameList[1].trim(),
                 style: GoogleFonts.nunito(
                     textStyle: const TextStyle(
                   fontSize: 12,

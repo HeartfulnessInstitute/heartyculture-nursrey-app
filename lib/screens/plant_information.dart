@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hcn_flutter/screens/contact_screen.dart';
+import '../widgets/image_carousel.dart';
+import 'contact_screen.dart';
+
+import '../modules/plant_module.dart';
+import 'maintenance_screen.dart';
 
 class PlantInformationScreen extends StatefulWidget {
-  const PlantInformationScreen({super.key});
+  const PlantInformationScreen({super.key, required this.plant});
+  final Plants plant;
 
   @override
   State<PlantInformationScreen> createState() => _PlantInformationScreenState();
@@ -74,6 +79,8 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
       body: SafeArea(
         child: selectedPageIndex == 0 || selectedPageIndex == 1
             ? plantGeneral(selectedPageIndex)
+            : selectedPageIndex == 2
+              ? const MaintenanceScreen()
             : selectedPageIndex == 3
                 ? const ContactScreen()
                 : Container(),
@@ -81,17 +88,40 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
     );
   }
 
+  List<dynamic> getImageList(){
+    List<dynamic> list = [];
+    if(widget.plant.image256 is String && widget.plant.image256.isNotEmpty){
+      list.add(widget.plant.image256);
+    }
+    if(widget.plant.plantInflorescenceImage!=null){
+      list.addAll(widget.plant.plantInflorescenceImage!);
+    }
+    if(widget.plant.plantFlowerImage!=null){
+      list.addAll(widget.plant.plantFlowerImage!);
+    }
+    if(widget.plant.plantHabitImage!=null){
+      list.addAll(widget.plant.plantHabitImage!);
+    }
+    if(widget.plant.plantLeafImage!=null){
+      list.addAll(widget.plant.plantLeafImage!);
+    }
+    if(widget.plant.plantStemImage!=null){
+      list.addAll(widget.plant.plantStemImage!);
+    }
+    return list;
+  }
+
   Widget plantGeneral(int index) {
     return Scaffold(
       body: SafeArea(
         child: Stack(
           children: [
-            Image.network(
+           /* Image.network(
               'https://www.ugaoo.com/cdn/shop/products/ajwain-plant-32220864446596.jpg',
               width: double.infinity,
               height: MediaQuery.of(context).size.height / 2,
               fit: BoxFit.cover,
-            ),
+            ),*/
             Positioned(
               top: 0,
               right: 0,
@@ -116,464 +146,466 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                 ),
               ),
             ),
-            index == 0
-                ? Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(20),
-                              topLeft: Radius.circular(20))),
-                      height: MediaQuery.of(context).size.height / 2,
+            Column(
+              children: [
+                Expanded(
+                  child: SizedBox(
                       width: double.infinity,
-                      padding: EdgeInsets.only(left: 10, right: 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(top: 0, bottom: 0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "General Details",
-                                  style: GoogleFonts.nunito(
-                                      textStyle: const TextStyle(
-                                    fontSize: 23,
-                                    color: Color(0xff212121),
-                                    fontWeight: FontWeight.w600,
-                                  )),
-                                ),
-                                ElevatedButton(
-                                    onPressed: () {},
-                                    style: ButtonStyle(
-                                        elevation: MaterialStateProperty.all(0),
-                                        overlayColor: MaterialStateProperty.all(
-                                            Theme.of(context)
-                                                .primaryColor
-                                                .withOpacity(.1)),
-                                        backgroundColor:
+                      child: ImageCarousel(imageList:getImageList())),
+                ),
+                index == 0
+                    ? Expanded(
+                      child: Container(
+                          decoration: const BoxDecoration(
+                              color: Colors.white),
+                          width: double.infinity,
+                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(top: 0, bottom: 0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "General Details",
+                                      style: GoogleFonts.nunito(
+                                          textStyle: const TextStyle(
+                                            fontSize: 23,
+                                            color: Color(0xff212121),
+                                            fontWeight: FontWeight.w600,
+                                          )),
+                                    ),
+                                    ElevatedButton(
+                                        onPressed: () {},
+                                        style: ButtonStyle(
+                                            elevation: MaterialStateProperty.all(0),
+                                            overlayColor: MaterialStateProperty.all(
+                                                Theme.of(context)
+                                                    .primaryColor
+                                                    .withOpacity(.1)),
+                                            backgroundColor:
                                             MaterialStateProperty.all(
                                                 Colors.white),
-                                        padding: MaterialStateProperty.all(
-                                            const EdgeInsets.only(
-                                                left: 15, right: 15)),
-                                        side: MaterialStateProperty.all(BorderSide(
-                                            color:
+                                            padding: MaterialStateProperty.all(
+                                                const EdgeInsets.only(
+                                                    left: 15, right: 15)),
+                                            side: MaterialStateProperty.all(BorderSide(
+                                                color:
                                                 Theme.of(context).primaryColor)),
-                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)))),
-                                    child: Text(
-                                      "Buy Now",
-                                      style: GoogleFonts.nunito(
-                                          textStyle: TextStyle(
-                                        fontSize: 16,
-                                        color: Theme.of(context).primaryColor,
+                                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)))),
+                                        child: Text(
+                                          "Buy Now",
+                                          style: GoogleFonts.nunito(
+                                              textStyle: TextStyle(
+                                                fontSize: 16,
+                                                color: Theme.of(context).primaryColor,
+                                                fontWeight: FontWeight.w400,
+                                              )),
+                                        )),
+                                  ],
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Common Name",
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color(0xff757575),
+                                                  fontWeight: FontWeight.w600,
+                                                )),
+                                          ),
+                                          Text(
+                                            widget.plant.name.toString().split('|')[0].trim(),
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 18,
+                                                  color: Color(0xff212121),
+                                                  fontWeight: FontWeight.w400,
+                                                )),
+                                          ),
+                                        ],
+                                      )),
+                                  Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Scientific Name",
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color(0xff757575),
+                                                  fontWeight: FontWeight.w600,
+                                                )),
+                                          ),
+                                          Text(
+                                            widget.plant.name.toString().split('|')[1].trim(),
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 18,
+                                                  color: Color(0xff212121),
+                                                  fontWeight: FontWeight.w400,
+                                                )),
+                                          ),
+                                        ],
+                                      ))
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Vegetation Type",
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color(0xff757575),
+                                                  fontWeight: FontWeight.w600,
+                                                )),
+                                          ),
+                                          Text(
+                                            widget.plant.vegetationType.toString(),
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 18,
+                                                  color: Color(0xff212121),
+                                                  fontWeight: FontWeight.w400,
+                                                )),
+                                          ),
+                                        ],
+                                      )),
+                                  Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Life Span",
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color(0xff757575),
+                                                  fontWeight: FontWeight.w600,
+                                                )),
+                                          ),
+                                          Text(
+                                            widget.plant.plantAverageLifeSpan.toString(),
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 18,
+                                                  color: Color(0xff212121),
+                                                  fontWeight: FontWeight.w400,
+                                                )),
+                                          ),
+                                        ],
+                                      ))
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Categ_id",
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color(0xff757575),
+                                                  fontWeight: FontWeight.w600,
+                                                )),
+                                          ),
+                                          Text(
+                                            "Native Trees",
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 18,
+                                                  color: Color(0xff212121),
+                                                  fontWeight: FontWeight.w400,
+                                                )),
+                                          ),
+                                        ],
+                                      )),
+                                  Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Height",
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color(0xff757575),
+                                                  fontWeight: FontWeight.w600,
+                                                )),
+                                          ),
+                                          Text(
+                                            widget.plant.plantMaxHeight.toString(),
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 18,
+                                                  color: Color(0xff212121),
+                                                  fontWeight: FontWeight.w400,
+                                                )),
+                                          ),
+                                        ],
+                                      ))
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Blooming Season",
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color(0xff757575),
+                                                  fontWeight: FontWeight.w600,
+                                                )),
+                                          ),
+                                          Text(
+                                            "June",
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 18,
+                                                  color: Color(0xff212121),
+                                                  fontWeight: FontWeight.w400,
+                                                )),
+                                          ),
+                                        ],
+                                      )),
+                                  Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Importance",
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color(0xff757575),
+                                                  fontWeight: FontWeight.w600,
+                                                )),
+                                          ),
+                                          Text(
+                                            widget.plant.economicImportance.toString(),
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 18,
+                                                  color: Color(0xff212121),
+                                                  fontWeight: FontWeight.w400,
+                                                )),
+                                          ),
+                                        ],
+                                      ))
+                                ],
+                              ),
+                            ],
+                          ),
+                      ),
+                    )
+                    : Expanded(
+                      child: Container(
+                        decoration: const BoxDecoration(
+                            color: Colors.white),
+                        height: MediaQuery.of(context).size.height / 2,
+                        width: double.infinity,
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              children: [
+                                Text(
+                                  widget.plant.name.toString().split('|')[0].trim(),
+                                  style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        fontSize: 23,
+                                        color: Color(0xff212121),
+                                        fontWeight: FontWeight.w700,
+                                      )),
+                                ),
+                                Text(
+                                  widget.plant.name.toString().split('|')[1].trim(),
+                                  style: GoogleFonts.nunito(
+                                      textStyle: const TextStyle(
+                                        fontSize: 14,
+                                        color: Color(0xff757575),
                                         fontWeight: FontWeight.w400,
                                       )),
-                                    )),
+                                ),
+                                Divider(
+                                  color: Theme.of(context).primaryColor,
+                                )
                               ],
                             ),
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                            Container(
+                              color: const Color(0xfff5f5f5),
+                              child: Row(
                                 children: [
-                                  Text(
-                                    "Common Name",
-                                    style: GoogleFonts.nunito(
-                                        textStyle: const TextStyle(
-                                      fontSize: 15,
-                                      color: Color(0xff757575),
-                                      fontWeight: FontWeight.w600,
-                                    )),
-                                  ),
-                                  Text(
-                                    "Devils Cotton",
-                                    style: GoogleFonts.nunito(
-                                        textStyle: const TextStyle(
-                                      fontSize: 18,
-                                      color: Color(0xff212121),
-                                      fontWeight: FontWeight.w400,
-                                    )),
-                                  ),
+                                  Container(
+                                      margin: const EdgeInsets.all(10),
+                                      child: Icon(Icons.water_drop_outlined,
+                                          color: Theme.of(context).primaryColor,
+                                          size: 35)),
+                                  Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Watering Frequency",
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color(0xff757575),
+                                                  fontWeight: FontWeight.w600,
+                                                )),
+                                          ),
+                                          Text(
+                                            "4 / Week",
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 18,
+                                                  color: Color(0xff212121),
+                                                  fontWeight: FontWeight.w400,
+                                                )),
+                                          ),
+                                        ],
+                                      ))
                                 ],
-                              )),
-                              Expanded(
-                                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              ),
+                            ),
+                            Container(
+                              color: const Color(0xfff5f5f5),
+                              child: Row(
                                 children: [
-                                  Text(
-                                    "Scientific Name",
-                                    style: GoogleFonts.nunito(
-                                        textStyle: const TextStyle(
-                                      fontSize: 15,
-                                      color: Color(0xff757575),
-                                      fontWeight: FontWeight.w600,
-                                    )),
-                                  ),
-                                  Text(
-                                    "Hibiscus rosa-sinensis",
-                                    style: GoogleFonts.nunito(
-                                        textStyle: const TextStyle(
-                                      fontSize: 18,
-                                      color: Color(0xff212121),
-                                      fontWeight: FontWeight.w400,
-                                    )),
-                                  ),
+                                  Container(
+                                      margin: const EdgeInsets.all(10),
+                                      child: Icon(Icons.wb_sunny_outlined,
+                                          color: Theme.of(context).primaryColor,
+                                          size: 35)),
+                                  Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Light",
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color(0xff757575),
+                                                  fontWeight: FontWeight.w600,
+                                                )),
+                                          ),
+                                          Text(
+                                            "Partial Sunlight",
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 18,
+                                                  color: Color(0xff212121),
+                                                  fontWeight: FontWeight.w400,
+                                                )),
+                                          ),
+                                        ],
+                                      ))
                                 ],
-                              ))
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              ),
+                            ),
+                            Container(
+                              color: const Color(0xfff5f5f5),
+                              child: Row(
                                 children: [
-                                  Text(
-                                    "Vegetation Type",
-                                    style: GoogleFonts.nunito(
-                                        textStyle: const TextStyle(
-                                      fontSize: 15,
-                                      color: Color(0xff757575),
-                                      fontWeight: FontWeight.w600,
-                                    )),
-                                  ),
-                                  Text(
-                                    "Evergreen",
-                                    style: GoogleFonts.nunito(
-                                        textStyle: const TextStyle(
-                                      fontSize: 18,
-                                      color: Color(0xff212121),
-                                      fontWeight: FontWeight.w400,
-                                    )),
-                                  ),
+                                  Container(
+                                      margin: const EdgeInsets.all(10),
+                                      child: Icon(Icons.thermostat_outlined,
+                                          color: Theme.of(context).primaryColor,
+                                          size: 35)),
+                                  Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Temperature",
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color(0xff757575),
+                                                  fontWeight: FontWeight.w600,
+                                                )),
+                                          ),
+                                          Text(
+                                            widget.plant.plantTemperature.toString(),
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 18,
+                                                  color: Color(0xff212121),
+                                                  fontWeight: FontWeight.w400,
+                                                )),
+                                          ),
+                                        ],
+                                      ))
                                 ],
-                              )),
-                              Expanded(
-                                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              ),
+                            ),
+                            Container(
+                              color: const Color(0xfff5f5f5),
+                              child: Row(
                                 children: [
-                                  Text(
-                                    "Life Span",
-                                    style: GoogleFonts.nunito(
-                                        textStyle: const TextStyle(
-                                      fontSize: 15,
-                                      color: Color(0xff757575),
-                                      fontWeight: FontWeight.w600,
-                                    )),
-                                  ),
-                                  Text(
-                                    "Perennial",
-                                    style: GoogleFonts.nunito(
-                                        textStyle: const TextStyle(
-                                      fontSize: 18,
-                                      color: Color(0xff212121),
-                                      fontWeight: FontWeight.w400,
-                                    )),
-                                  ),
+                                  Container(
+                                      margin: const EdgeInsets.all(10),
+                                      child: Icon(Icons.flourescent,
+                                          color: Theme.of(context).primaryColor,
+                                          size: 35)),
+                                  Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Soil:Sand:FYM/Vermicompost",
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color(0xff757575),
+                                                  fontWeight: FontWeight.w600,
+                                                )),
+                                          ),
+                                          Text(
+                                            "3:1:1:0.75",
+                                            style: GoogleFonts.nunito(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 18,
+                                                  color: Color(0xff212121),
+                                                  fontWeight: FontWeight.w400,
+                                                )),
+                                          ),
+                                        ],
+                                      ))
                                 ],
-                              ))
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Categ_id",
-                                    style: GoogleFonts.nunito(
-                                        textStyle: const TextStyle(
-                                      fontSize: 15,
-                                      color: Color(0xff757575),
-                                      fontWeight: FontWeight.w600,
-                                    )),
-                                  ),
-                                  Text(
-                                    "Native Trees",
-                                    style: GoogleFonts.nunito(
-                                        textStyle: const TextStyle(
-                                      fontSize: 18,
-                                      color: Color(0xff212121),
-                                      fontWeight: FontWeight.w400,
-                                    )),
-                                  ),
-                                ],
-                              )),
-                              Expanded(
-                                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Height",
-                                    style: GoogleFonts.nunito(
-                                        textStyle: const TextStyle(
-                                      fontSize: 15,
-                                      color: Color(0xff757575),
-                                      fontWeight: FontWeight.w600,
-                                    )),
-                                  ),
-                                  Text(
-                                    "0-1 ft",
-                                    style: GoogleFonts.nunito(
-                                        textStyle: const TextStyle(
-                                      fontSize: 18,
-                                      color: Color(0xff212121),
-                                      fontWeight: FontWeight.w400,
-                                    )),
-                                  ),
-                                ],
-                              ))
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Blooming Season",
-                                    style: GoogleFonts.nunito(
-                                        textStyle: const TextStyle(
-                                      fontSize: 15,
-                                      color: Color(0xff757575),
-                                      fontWeight: FontWeight.w600,
-                                    )),
-                                  ),
-                                  Text(
-                                    "June",
-                                    style: GoogleFonts.nunito(
-                                        textStyle: const TextStyle(
-                                      fontSize: 18,
-                                      color: Color(0xff212121),
-                                      fontWeight: FontWeight.w400,
-                                    )),
-                                  ),
-                                ],
-                              )),
-                              Expanded(
-                                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Importance",
-                                    style: GoogleFonts.nunito(
-                                        textStyle: const TextStyle(
-                                      fontSize: 15,
-                                      color: Color(0xff757575),
-                                      fontWeight: FontWeight.w600,
-                                    )),
-                                  ),
-                                  Text(
-                                    "Medicinal",
-                                    style: GoogleFonts.nunito(
-                                        textStyle: const TextStyle(
-                                      fontSize: 18,
-                                      color: Color(0xff212121),
-                                      fontWeight: FontWeight.w400,
-                                    )),
-                                  ),
-                                ],
-                              ))
-                            ],
-                          ),
-                        ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  )
-                : Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(20),
-                              topLeft: Radius.circular(20))),
-                      height: MediaQuery.of(context).size.height / 2,
-                      width: double.infinity,
-                      padding: EdgeInsets.only(left: 10, right: 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Column(
-                            children: [
-                              Text(
-                                "Friendship Plant",
-                                style: GoogleFonts.nunito(
-                                    textStyle: const TextStyle(
-                                  fontSize: 23,
-                                  color: Color(0xff212121),
-                                  fontWeight: FontWeight.w700,
-                                )),
-                              ),
-                              Text(
-                                "Pilea Involucrata",
-                                style: GoogleFonts.nunito(
-                                    textStyle: const TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xff757575),
-                                  fontWeight: FontWeight.w400,
-                                )),
-                              ),
-                              Divider(
-                                color: Theme.of(context).primaryColor,
-                              )
-                            ],
-                          ),
-                          Container(
-                            color: const Color(0xfff5f5f5),
-                            child: Row(
-                              children: [
-                                Container(
-                                    margin: const EdgeInsets.all(10),
-                                    child: Icon(Icons.water_drop_outlined,
-                                        color: Theme.of(context).primaryColor,
-                                        size: 35)),
-                                Expanded(
-                                    child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Watering Frequency",
-                                      style: GoogleFonts.nunito(
-                                          textStyle: const TextStyle(
-                                        fontSize: 15,
-                                        color: Color(0xff757575),
-                                        fontWeight: FontWeight.w600,
-                                      )),
-                                    ),
-                                    Text(
-                                      "4 / Week",
-                                      style: GoogleFonts.nunito(
-                                          textStyle: const TextStyle(
-                                        fontSize: 18,
-                                        color: Color(0xff212121),
-                                        fontWeight: FontWeight.w400,
-                                      )),
-                                    ),
-                                  ],
-                                ))
-                              ],
-                            ),
-                          ),
-                          Container(
-                            color: const Color(0xfff5f5f5),
-                            child: Row(
-                              children: [
-                                Container(
-                                    margin: const EdgeInsets.all(10),
-                                    child: Icon(Icons.wb_sunny_outlined,
-                                        color: Theme.of(context).primaryColor,
-                                        size: 35)),
-                                Expanded(
-                                    child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Light",
-                                      style: GoogleFonts.nunito(
-                                          textStyle: const TextStyle(
-                                        fontSize: 15,
-                                        color: Color(0xff757575),
-                                        fontWeight: FontWeight.w600,
-                                      )),
-                                    ),
-                                    Text(
-                                      "Partial Sunlight",
-                                      style: GoogleFonts.nunito(
-                                          textStyle: const TextStyle(
-                                        fontSize: 18,
-                                        color: Color(0xff212121),
-                                        fontWeight: FontWeight.w400,
-                                      )),
-                                    ),
-                                  ],
-                                ))
-                              ],
-                            ),
-                          ),
-                          Container(
-                            color: const Color(0xfff5f5f5),
-                            child: Row(
-                              children: [
-                                Container(
-                                    margin: const EdgeInsets.all(10),
-                                    child: Icon(Icons.thermostat_outlined,
-                                        color: Theme.of(context).primaryColor,
-                                        size: 35)),
-                                Expanded(
-                                    child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Temperature",
-                                      style: GoogleFonts.nunito(
-                                          textStyle: const TextStyle(
-                                        fontSize: 15,
-                                        color: Color(0xff757575),
-                                        fontWeight: FontWeight.w600,
-                                      )),
-                                    ),
-                                    Text(
-                                      "25° C - 30° C",
-                                      style: GoogleFonts.nunito(
-                                          textStyle: const TextStyle(
-                                        fontSize: 18,
-                                        color: Color(0xff212121),
-                                        fontWeight: FontWeight.w400,
-                                      )),
-                                    ),
-                                  ],
-                                ))
-                              ],
-                            ),
-                          ),
-                          Container(
-                            color: const Color(0xfff5f5f5),
-                            child: Row(
-                              children: [
-                                Container(
-                                    margin: const EdgeInsets.all(10),
-                                    child: Icon(Icons.flourescent,
-                                        color: Theme.of(context).primaryColor,
-                                        size: 35)),
-                                Expanded(
-                                    child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Soil:Sand:FYM/Vermicompost",
-                                      style: GoogleFonts.nunito(
-                                          textStyle: const TextStyle(
-                                        fontSize: 15,
-                                        color: Color(0xff757575),
-                                        fontWeight: FontWeight.w600,
-                                      )),
-                                    ),
-                                    Text(
-                                      "3:1:1:0.75",
-                                      style: GoogleFonts.nunito(
-                                          textStyle: const TextStyle(
-                                        fontSize: 18,
-                                        color: Color(0xff212121),
-                                        fontWeight: FontWeight.w400,
-                                      )),
-                                    ),
-                                  ],
-                                ))
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
+              ],
+            )
+
+
           ],
         ),
       ),

@@ -68,8 +68,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      body: SafeArea(
-          child: selectedPageIndex == 0 ? AllPlantsScreen() : Container()),
+      body: IndexedStack(
+          index: selectedPageIndex,
+          children: [
+            AllPlantsScreen(),
+            Container()
+          ]),
     );
   }
 }

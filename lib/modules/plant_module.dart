@@ -49,7 +49,17 @@ class Plants {
   double? standardPrice;
   String? name;
   dynamic description;
-  bool? image256;
+  dynamic image256;
+  dynamic vegetationType;
+  dynamic plantAverageLifeSpan;
+  dynamic plantMaxHeight;
+  dynamic economicImportance;
+  dynamic plantTemperature;
+  List<int>? plantHabitImage;
+  List<int>? plantStemImage;
+  List<int>? plantLeafImage;
+  List<int>? plantInflorescenceImage;
+  List<int>? plantFlowerImage;
 
   Plants(
       {this.id,
@@ -68,6 +78,30 @@ class Plants {
     name = json['name'];
     description = json['description'];
     image256 = json['image_256'];
+    vegetationType= json['vegetation_type'];
+    plantAverageLifeSpan= json['plant_average_life_span'];
+    plantMaxHeight= json['plant_max_height'];
+    economicImportance= json['x_EconomicImportance'];
+    plantTemperature= json['plant_temperature'];
+    if(json['plant_habit_image']!=null){
+      plantHabitImage = json['plant_habit_image'].cast<int>();
+    }
+
+    if(json['plant_stem_image']!=null){
+      plantStemImage = json['plant_stem_image'].cast<int>();
+    }
+
+    if(json['plant_leaf_image']!=null){
+      plantLeafImage = json['plant_leaf_image'].cast<int>();
+    }
+
+    if(json['plant_inflorescence_image']!=null){
+      plantLeafImage = json['plant_inflorescence_image'].cast<int>();
+    }
+
+    if(json['plant_flower_image']!=null){
+      plantLeafImage = json['plant_flower_image'].cast<int>();
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -79,6 +113,16 @@ class Plants {
     data['name'] = name;
     data['description'] = description;
     data['image_256'] = image256;
+    data['vegetation_type']=vegetationType;
+    data['plant_average_life_span']=plantAverageLifeSpan;
+    data['plant_max_height']=plantMaxHeight;
+    data['x_EconomicImportance']=economicImportance;
+    data['plant_temperature']=plantTemperature;
+    data['plant_habit_image'] = plantHabitImage;
+    data['plant_stem_image'] = plantStemImage;
+    data['plant_leaf_image'] = plantLeafImage;
+    data['plant_inflorescence_image'] =  plantInflorescenceImage;
+    data['plant_flower_image'] = plantFlowerImage;
     return data;
   }
 }

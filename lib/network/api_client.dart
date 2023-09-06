@@ -21,4 +21,10 @@ abstract class RestClient {
       @Query("page_size") int pageSize,
       @Query("page") int page,
       );
+
+  @GET("/api/product.template/{id}")
+  Future<Plants> getSpecificPlant(
+      @Header("Cookie")String cookie,
+      @Query("query") String query,
+      @Path("id") String plantId);
 }
