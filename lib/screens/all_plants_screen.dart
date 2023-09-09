@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../modules/plant_module.dart';
+import '../preference_storage/all_plants_local_preference.dart';
 import 'plant_screen.dart';
 import '../network/api_service_singelton.dart';
 import '../preference_storage/storage_notifier.dart';
@@ -21,6 +22,10 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
   bool isLoading = false;
   int currentPage=1;
   int totalPages = 10;
+  bool isSearch = false;
+
+  //list to search plants, list without pagination list
+  List<Plants>? searchPlantList;
 
   Future<void> callAllPlantsAPI() async {
     if (!isLoading) {
@@ -48,6 +53,7 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    getAllPlants();
     callAllPlantsAPI();
   }
 
@@ -66,10 +72,33 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
     }
   }
 
+  Future<void> getAllPlants() async {
+    var plants = await AllPlantStorage.getAllPlants();
+    setState(() {
+      searchPlantList = plants;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: isSearch?
+      AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Theme.of(context).primaryColor,
+        title: searchPlantList!=null?CustomAppBar(plantList:searchPlantList!):Container(),
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.close),
+              tooltip: 'Close',
+              onPressed: () {
+                setState(() {
+                   isSearch = false;
+                });
+              }),
+        ],
+      ):
+      AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Theme.of(context).primaryColor,
         title: Text("All Plants",
@@ -80,7 +109,11 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
           IconButton(
               icon: const Icon(Icons.search),
               tooltip: 'Search',
-              onPressed: () {}),
+              onPressed: () {
+                setState(() {
+                  isSearch=true;
+                });
+              }),
           IconButton(
               icon: const Icon(Icons.sort),
               tooltip: 'Search',
@@ -186,3 +219,54 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
     );
   }
 }
+
+class CustomAppBar extends StatefulWidget {
+  const CustomAppBar({super.key,required this.plantList});
+
+  final List<Plants> plantList;
+
+  @override
+  State<CustomAppBar> createState() => _CustomAppBarState();
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
+  TextEditingController textEditingController = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child:Autocomplete<Plants>(
+        onSelected: (Plants plant) {
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>PlantScreen(plantId: plant.id.toString())));
+        },
+        optionsBuilder: (textEditingValue) {
+          return widget.plantList.where((element) => element.name!.toLowerCase().contains(textEditingValue.text.toLowerCase()));
+        },
+        displayStringForOption: (Plants plant) => plant.name.toString(),
+        fieldViewBuilder: (BuildContext context, TextEditingController textEditingControllerRest, FocusNode fieldFocusNode,
+            VoidCallback onFieldSubmitted) {
+          textEditingController = textEditingControllerRest;
+          return TextField(
+              autofocus: false,
+              controller: textEditingController,
+              focusNode: fieldFocusNode,
+              textAlign: TextAlign.left,
+              maxLines: 1,
+              onChanged: (value) {
+              },
+              decoration: InputDecoration(
+                  hintText: "Search Plants",
+                  hintStyle: TextStyle(color: Colors.white.withOpacity(.5)),
+                  border: InputBorder.none),
+              style: GoogleFonts.nunito(
+                  textStyle: const TextStyle(
+                    fontWeight: FontWeight.w400,
+                    decoration: TextDecoration.none,
+                    fontSize: 18,
+                    color: Colors.white,
+                  )));
+        },
+      )
+    );
+  }
+}
+
