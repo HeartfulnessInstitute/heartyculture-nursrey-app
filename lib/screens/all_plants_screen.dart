@@ -28,7 +28,7 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
         isLoading = true;
       });
       var query = "{id, price, list_price, standard_price, name, description, image_256}";
-      var filter = '[["categ_id", "=", "Aug-2023 / Incomplete"]]';
+      var filter = '[["categ_id", "=", "HCN Plants"]]';
       var pageSize = 50;
       var cookie = await SessionTokenPreference.getSessionToken();
       var response = await ApiServiceSingleton.instance.getPlants(

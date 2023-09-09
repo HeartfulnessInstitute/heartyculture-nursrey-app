@@ -1,11 +1,14 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hcn_flutter/screens/plant_information.dart';
 
+import '../constants.dart';
 import '../modules/plant_module.dart';
+import '../modules/session_module.dart';
 import '../network/api_service_singelton.dart';
 import '../preference_storage/storage_notifier.dart';
 
@@ -20,6 +23,7 @@ class PlantScreen extends StatefulWidget {
 
 class _PlantScreenState extends State<PlantScreen> {
   Plants? plants;
+  bool isErrorInAPI = false;
 
   @override
   void initState() {
@@ -173,7 +177,8 @@ class _PlantScreenState extends State<PlantScreen> {
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) =>
-                                          PlantInformationScreen(plant:plants!)));
+                                          PlantInformationScreen(
+                                              plant: plants!)));
                                 },
                                 style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all(
@@ -202,26 +207,74 @@ class _PlantScreenState extends State<PlantScreen> {
                   )
                 ],
               )
-            : Center(
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
+            : isErrorInAPI
+                ? const Center(child: Text("Error"))
+                : Center(
+                    child: CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
       ),
     );
   }
 
   Future<void> callGetSpecificPlantAPI() async {
-    var query =
-        "{id, price, list_price, standard_price, name, description, image_256"
-        ",vegetation_type,plant_average_life_span,plant_max_height"
-        ",x_EconomicImportance,plant_temperature,plant_habit_image,plant_stem_image"
-        ",plant_leaf_image,plant_inflorescence_image,plant_flower_image}";
     var cookie = await SessionTokenPreference.getSessionToken();
-    var response = await ApiServiceSingleton.instance
-        .getSpecificPlant(cookie, query, widget.plantId);
-    setState(() {
-      plants = response;
-    });
+    if(cookie.isEmpty){
+       callCookieAPI();
+    }else{
+      specificPlantAPI(cookie);
+    }
+  }
+
+  void specificPlantAPI(String cookie) async {
+    try{
+      var query =
+          "{id, price, list_price, standard_price, name, description, image_256"
+          ",vegetation_type,plant_average_life_span,plant_max_height"
+          ",x_EconomicImportance,plant_temperature,plant_habit_image,plant_stem_image"
+          ",plant_leaf_image,plant_inflorescence_image,plant_flower_image}";
+      var response = await ApiServiceSingleton.instance
+          .getSpecificPlant(cookie, query, widget.plantId);
+      if(response.response.statusCode == 200){
+        setState(() {
+          plants = response.data;
+        });
+      }else{
+        setState(() {
+          isErrorInAPI = true;
+        });
+      }
+    } catch (e){
+      setState(() {
+        isErrorInAPI = true;
+      });
+      log("error:$e");
+    }  }
+
+  void callCookieAPI() {
+    try {
+      SessionModule sessionModule = SessionModule();
+      Params params = Params();
+      params.db = Constants.db;
+      params.login =  Constants.login;
+      params.password = Constants.password;
+      sessionModule.params = params;
+      ApiServiceSingleton.instance
+          .getSessionCookie(sessionModule)
+          .then((response) {
+        final cookies = response.response.headers['set-cookie'];
+        List<String>? parts = cookies?[0].split(';');
+        String? sessionId = parts?[0].trim();
+        if (sessionId != null) {
+          SessionTokenPreference.setSessionToken(sessionId)
+              .then((value) {
+               specificPlantAPI(sessionId);
+          });
+        }
+      });
+    } catch (e) {
+      //error
+    }
   }
 }

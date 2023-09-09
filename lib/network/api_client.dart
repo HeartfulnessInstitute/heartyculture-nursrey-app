@@ -23,7 +23,7 @@ abstract class RestClient {
       );
 
   @GET("/api/product.template/{id}")
-  Future<Plants> getSpecificPlant(
+  Future<HttpResponse<Plants>> getSpecificPlant(
       @Header("Cookie")String cookie,
       @Query("query") String query,
       @Path("id") String plantId);

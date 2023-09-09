@@ -79,7 +79,7 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<Plants> getSpecificPlant(
+  Future<HttpResponse<Plants>> getSpecificPlant(
     cookie,
     query,
     plantId,
@@ -89,8 +89,8 @@ class _RestClient implements RestClient {
     final _headers = <String, dynamic>{r'Cookie': cookie};
     _headers.removeWhere((k, v) => v == null);
     final Map<String, dynamic>? _data = null;
-    final _result =
-        await _dio.fetch<Map<String, dynamic>>(_setStreamType<Plants>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<HttpResponse<Plants>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -103,7 +103,8 @@ class _RestClient implements RestClient {
             )
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = Plants.fromJson(_result.data!);
-    return value;
+    final httpResponse = HttpResponse(value, _result);
+    return httpResponse;
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

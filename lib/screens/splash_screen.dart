@@ -6,6 +6,8 @@ import 'package:hcn_flutter/network/api_service_singelton.dart';
 import 'package:hcn_flutter/preference_storage/storage_notifier.dart';
 import 'package:hcn_flutter/screens/home_screen.dart';
 
+import '../constants.dart';
+
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
@@ -44,9 +46,9 @@ class SplashScreen extends StatelessWidget {
                 try {
                   SessionModule sessionModule = SessionModule();
                   Params params = Params();
-                  params.db = "hc-nursery";
-                  params.login = "vignesh.manickam@volunteer.heartfulness.org";
-                  params.password = "hcnVignesh";
+                  params.db = Constants.db;
+                  params.login =  Constants.login;
+                  params.password = Constants.password;
                   sessionModule.params = params;
                   ApiServiceSingleton.instance
                       .getSessionCookie(sessionModule)
