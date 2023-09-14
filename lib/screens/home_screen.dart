@@ -7,6 +7,7 @@ import '../network/api_service_singelton.dart';
 import '../preference_storage/all_plants_local_preference.dart';
 import '../preference_storage/storage_notifier.dart';
 import 'all_plants_screen.dart';
+import 'my_plants_screen.dart';
 import 'qr_code_scanner.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -99,9 +100,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: IndexedStack(
           index: selectedPageIndex,
-          children: [
+          children: const [
             AllPlantsScreen(),
-            Container()
+            MyPlantsScreen()
           ]),
     );
   }

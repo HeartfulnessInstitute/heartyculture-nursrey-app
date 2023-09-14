@@ -1,15 +1,18 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
-
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hcn_flutter/screens/plant_information.dart';
+import '../notofications/notification_controller.dart';
+import 'plant_information.dart';
+import 'package:provider/provider.dart';
 
 import '../constants.dart';
 import '../modules/plant_module.dart';
 import '../modules/session_module.dart';
 import '../network/api_service_singelton.dart';
+import '../preference_storage/my_plants_preference_notifier.dart';
 import '../preference_storage/storage_notifier.dart';
 
 class PlantScreen extends StatefulWidget {
@@ -24,11 +27,14 @@ class PlantScreen extends StatefulWidget {
 class _PlantScreenState extends State<PlantScreen> {
   Plants? plants;
   bool isErrorInAPI = false;
+  List<Plants>myPlantsList = [];
+  Plants? plantPresent;
 
   @override
   void initState() {
     super.initState();
     callGetSpecificPlantAPI();
+    myPlantsList =Provider.of<MyPlantsPreferenceNotifier>(context, listen: false).myPlantsList;
   }
 
   @override
@@ -124,7 +130,15 @@ class _PlantScreenState extends State<PlantScreen> {
                             width: double.infinity,
                             margin: const EdgeInsets.only(left: 25, right: 25),
                             child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  if(plantPresent!=null){
+                                    Provider.of<MyPlantsPreferenceNotifier>(context, listen: false).removePlantFromList(plants!);
+                                    NotificationController.stopNotifications(plants!);
+                                  }else{
+                                    Provider.of<MyPlantsPreferenceNotifier>(context, listen: false).addPlantsToList(plants!);
+                                    NotificationController.createNewNotification(plants!);
+                                  }
+                                },
                                 style: ButtonStyle(
                                     backgroundColor:
                                         MaterialStateProperty.all(Colors.white),
@@ -136,7 +150,7 @@ class _PlantScreenState extends State<PlantScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(50.0)))),
                                 child: Text(
-                                  "Add to my plant",
+                                  plantPresent!=null?"Remove from my plants":"Add to my plant",
                                   style: GoogleFonts.nunito(
                                       textStyle: TextStyle(
                                     fontSize: 18,
@@ -239,6 +253,7 @@ class _PlantScreenState extends State<PlantScreen> {
       if(response.response.statusCode == 200){
         setState(() {
           plants = response.data;
+          plantPresent = myPlantsList.firstWhereOrNull((element)=>element.id==plants!.id);
         });
       }else{
         setState(() {
