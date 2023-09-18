@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../modules/maintenance_module.dart';
 import 'fertilizing_screen.dart';
 import 'maintenance_list_screen.dart';
 
@@ -11,6 +15,22 @@ class MaintenanceScreen extends StatefulWidget {
 }
 
 class _MaintenanceScreenState extends State<MaintenanceScreen> {
+  List<MaintenanceModule>? maintenanceList;
+  @override
+  void initState() {
+    super.initState();
+    loadJsonData();
+  }
+
+  Future<void> loadJsonData() async {
+    String jsonData = await rootBundle.loadString('assets/local_json/maintenance.json');
+    setState(() {
+      maintenanceList= (json.decode(jsonData) as List)
+          .map((data) => MaintenanceModule.fromJson(data))
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,7 +43,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
           radius: 1.0,
         ),
       ),
-      child: Column(
+      child: maintenanceList!=null?Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Image.asset("assets/images/logo_transparent.png"),
@@ -38,7 +58,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
           InkWell(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const FertilizingScreen()));
+                  builder: (context) => FertilizingScreen(maintenanceList:maintenanceList!)));
             },
             child: Card(
               elevation: 10,
@@ -81,8 +101,9 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
           ),
           InkWell(
             onTap: () {
+              var selectedMaintenance = maintenanceList?.firstWhere((element) => element.name=="Insects Pests");
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const MaintenanceListScreen()));
+                  builder: (context) => MaintenanceListScreen(maintenanceModule: selectedMaintenance!)));
             },
             child: Card(
               elevation: 10,
@@ -125,8 +146,9 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
           ),
           InkWell(
             onTap: () {
+              var selectedMaintenance = maintenanceList?.firstWhere((element) => element.name=="Diseases");
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const MaintenanceListScreen()));
+                  builder: (context) => MaintenanceListScreen(maintenanceModule: selectedMaintenance!)));
             },
             child: Card(
               elevation: 10,
@@ -168,7 +190,8 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
             ),
           )
         ],
-      ),
+      )
+          :Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor)),
     );
   }
 }

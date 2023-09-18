@@ -32,29 +32,4 @@ class AllPlantStorage {
     List<Plants> plantsList = jsonList.map((json) => Plants.fromJson(json)).toList();
     return plantsList;
   }
-
-  static Future<void> setAllPlantsDetailed(List<Plants> plantsList)async {
-    final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-    List<Map<String, dynamic>> jsonList = plantsList.map((e) => e.toJson()).toList();
-    String jsonString = jsonEncode(jsonList);
-    final SharedPreferences prefs = await _prefs;
-    prefs
-        .setString(ALL_PLANTS_KEY_DETAILED, jsonString)
-        .then((bool success) {});
-  }
-
-  static Future<List<Plants>> getAllPlantsDetailed() async {
-    final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-    final SharedPreferences prefs = await _prefs;
-    var jsonString ="";
-    if (prefs.getString(ALL_PLANTS_KEY_DETAILED) != null) {
-      jsonString = prefs.getString(ALL_PLANTS_KEY_DETAILED)!;
-    } else {
-      return [];
-    }
-    List<dynamic> jsonList = jsonDecode(jsonString);
-    List<Plants> plantsList = jsonList.map((json) => Plants.fromJson(json)).toList();
-    return plantsList;
-  }
-
 }

@@ -3,9 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../network/api_service_singelton.dart';
-import '../preference_storage/all_plants_local_preference.dart';
-import '../preference_storage/storage_notifier.dart';
 import 'all_plants_screen.dart';
 import 'my_plants_screen.dart';
 import 'qr_code_scanner.dart';
@@ -37,24 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
         textStyle: TextStyle(
       color: Theme.of(context).primaryColor,
     ));
-  }
-
-  Future<void> getAllPlants() async {
-      var query = "{id,name}";
-      var filter = '[["categ_id", "=", "HCN Plants"]]';
-      var pageSize = 50000;
-      var cookie = await SessionTokenPreference.getSessionToken();
-      var response = await ApiServiceSingleton.instance.getPlants(
-          cookie, query, filter, pageSize, 1);
-      if (response.result != null) {
-        AllPlantStorage.setAllPlants(response.result!);
-      }
-    }
-
-    @override
-  void initState() {
-    super.initState();
-    getAllPlants();
   }
 
   @override

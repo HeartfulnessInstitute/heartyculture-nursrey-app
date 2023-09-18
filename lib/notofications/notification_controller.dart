@@ -1,12 +1,14 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import '../constants.dart';
 import '../modules/notification_module.dart';
 import '../modules/plant_module.dart';
 import '../preference_storage/notification_preferences.dart';
+import '../preference_storage/storage_notifier.dart';
 
 class NotificationController {
   static ReceivedAction? initialAction;
@@ -84,10 +86,15 @@ class NotificationController {
     if (!isAllowed) isAllowed = await displayNotificationRationale();
     if (!isAllowed) return;
     String localTimeZone = await AwesomeNotifications().getLocalTimeZoneIdentifier();
-    final List<int> imageBytes = base64Decode(plants.image256);
+    Dio dio = Dio();
+    Response response = await dio.get(
+      '${Constants.imageBaseURL}${plants.id.toString()}&field=image_256', // Replace with your image URL
+      options: Options(responseType: ResponseType.bytes,
+      headers: {'Cookie': await SessionTokenPreference.getSessionToken()}),
+    );
     final Directory tempDir = await getTemporaryDirectory();
     final File tempFile = File('${tempDir.path}/temp_image.png');
-    await tempFile.writeAsBytes(imageBytes);
+    await tempFile.writeAsBytes(response.data);
     var payLoad = {'plantId': plants.id!.toString(),'plantName': plants.name!.toString()};
     //Send notification at that time
     await AwesomeNotifications().createNotification(

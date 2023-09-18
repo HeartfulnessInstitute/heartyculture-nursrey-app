@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../constants.dart';
 import '../widgets/image_carousel.dart';
 import 'contact_screen.dart';
 
 import '../modules/plant_module.dart';
 import 'maintenance_screen.dart';
+import 'package:collection/collection.dart';
 
 class PlantInformationScreen extends StatefulWidget {
   const PlantInformationScreen({super.key, required this.plant});
@@ -89,24 +91,25 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
   }
 
   List<dynamic> getImageList(){
-    List<dynamic> list = [];
-    if(widget.plant.image256 is String && widget.plant.image256.isNotEmpty){
-      list.add(widget.plant.image256);
+    var prefix = "https://erp.heartyculturenursery.com/web/content/";
+    List<String> list = [];
+    list.add(
+      "${Constants.imageBaseURL}${widget.plant.id.toString()}&field=image_256"
+    );
+    if(widget.plant.plantInflorescenceImage!=null && widget.plant.plantInflorescenceImage?.isNotEmpty==true){
+      list.add(prefix+widget.plant.plantInflorescenceImage![0].toString());
     }
-    if(widget.plant.plantInflorescenceImage!=null){
-      list.addAll(widget.plant.plantInflorescenceImage!);
+    if(widget.plant.plantFlowerImage!=null && widget.plant.plantFlowerImage?.isNotEmpty==true){
+      list.add(prefix+widget.plant.plantFlowerImage![0].toString());
     }
-    if(widget.plant.plantFlowerImage!=null){
-      list.addAll(widget.plant.plantFlowerImage!);
+    if(widget.plant.plantHabitImage!=null && widget.plant.plantHabitImage?.isNotEmpty==true){
+      list.add(prefix+widget.plant.plantHabitImage![0].toString());
     }
-    if(widget.plant.plantHabitImage!=null){
-      list.addAll(widget.plant.plantHabitImage!);
+    if(widget.plant.plantLeafImage!=null && widget.plant.plantLeafImage?.isNotEmpty==true){
+      list.add(prefix+widget.plant.plantLeafImage![0].toString());
     }
-    if(widget.plant.plantLeafImage!=null){
-      list.addAll(widget.plant.plantLeafImage!);
-    }
-    if(widget.plant.plantStemImage!=null){
-      list.addAll(widget.plant.plantStemImage!);
+    if(widget.plant.plantStemImage!=null && widget.plant.plantStemImage?.isNotEmpty==true){
+      list.add(prefix+widget.plant.plantStemImage![0].toString());
     }
     return list;
   }
@@ -299,7 +302,7 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                                                 )),
                                           ),
                                           Text(
-                                            widget.plant.plantAverageLifeSpan.toString(),
+                                            getValueByDisplayName("Life Span"),
                                             style: GoogleFonts.nunito(
                                                 textStyle: const TextStyle(
                                                   fontSize: 18,
@@ -351,7 +354,7 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                                                 )),
                                           ),
                                           Text(
-                                            widget.plant.plantMaxHeight.toString(),
+                                            widget.plant.canopyType.toString(),
                                             style: GoogleFonts.nunito(
                                                 textStyle: const TextStyle(
                                                   fontSize: 18,
@@ -379,7 +382,7 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                                                 )),
                                           ),
                                           Text(
-                                            "June",
+                                            widget.plant.origin=="Native"?"Indian":widget.plant.origin,
                                             style: GoogleFonts.nunito(
                                                 textStyle: const TextStyle(
                                                   fontSize: 18,
@@ -513,7 +516,7 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                                                 )),
                                           ),
                                           Text(
-                                            "Partial Sunlight",
+                                            getValueByDisplayName("Light"),
                                             style: GoogleFonts.nunito(
                                                 textStyle: const TextStyle(
                                                   fontSize: 18,
@@ -549,7 +552,7 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                                                 )),
                                           ),
                                           Text(
-                                            widget.plant.plantTemperature.toString(),
+                                            getValueByDisplayName("Temperature"),
                                             style: GoogleFonts.nunito(
                                                 textStyle: const TextStyle(
                                                   fontSize: 18,
@@ -576,7 +579,7 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "Soil:Sand:FYM/Vermicompost",
+                                            "Soil Mix",
                                             style: GoogleFonts.nunito(
                                                 textStyle: const TextStyle(
                                                   fontSize: 15,
@@ -585,10 +588,10 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                                                 )),
                                           ),
                                           Text(
-                                            "3:1:1:0.75",
+                                            getValueByDisplayName("Soil Mix"),
                                             style: GoogleFonts.nunito(
                                                 textStyle: const TextStyle(
-                                                  fontSize: 18,
+                                                  fontSize: 16,
                                                   color: Color(0xff212121),
                                                   fontWeight: FontWeight.w400,
                                                 )),
@@ -610,5 +613,14 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
         ),
       ),
     );
+  }
+
+  String getValueByDisplayName(String displayName){
+    var attributeLine = widget.plant.attributeLineIds?.firstWhereOrNull((element) => element.displayName == displayName);
+    if(attributeLine!=null){
+      return attributeLine.valueIds?[0].name??"-";
+    }else{
+      return "-";
+    }
   }
 }

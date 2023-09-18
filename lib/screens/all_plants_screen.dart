@@ -1,9 +1,8 @@
-import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import '../constants.dart';
 import '../modules/notification_module.dart';
 import '../modules/plant_module.dart';
 import '../preference_storage/all_plants_local_preference.dart';
@@ -22,81 +21,41 @@ class AllPlantsScreen extends StatefulWidget {
 
 class _AllPlantsScreenState extends State<AllPlantsScreen> {
   List<Plants> plantsList = [];
-  ScrollController _scrollController = ScrollController();
-  bool isLoading = false;
-  int currentPage=1;
-  int totalPages = 10;
   bool isSearch = false;
-
-  //list to search plants, list without pagination list
-  List<Plants>? searchPlantList;
 
   late List<NotificationModule> notificationList;
 
+  late Map<String, String> headersMap;
+
   Future<void> callAllPlantsAPI() async {
-    if (!isLoading) {
-      if(currentPage!=1){
-        setState(() {
-          isLoading = true;
-        });
-      }
-      var query = "{id, price, list_price, standard_price, name, description, image_256}";
+      var query = "{id, name, description}";
       var filter = '[["categ_id", "=", "HCN Plants"]]';
-      var pageSize = 50;
+      var pageSize = 50000;
       var cookie = await SessionTokenPreference.getSessionToken();
       var response = await ApiServiceSingleton.instance.getPlants(
-          cookie, query, filter, pageSize, currentPage);
+          cookie, query, filter, pageSize, 1);
       if (response.result != null) {
-        if(currentPage==1 && response.result!=null){
-          AllPlantStorage.setAllPlantsDetailed(response.result!);
-        }
-        setState(() {
-          if(currentPage==1){
-            plantsList =  response.result!;
-          }else{
-            plantsList.addAll(response.result as Iterable<Plants>);
-          }
-          totalPages = response.totalPages!;
-          currentPage++;
-          isLoading = false;
-        });
+        AllPlantStorage.setAllPlants(response.result!);
+          setState(() {
+            plantsList = response.result!;
+          });
       }
-    }
   }
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
-    AllPlantStorage.getAllPlantsDetailed().then((value){
+    SessionTokenPreference.getSessionToken().then((value){
       setState(() {
-        plantsList = value;
+        headersMap = {'Cookie': value};
       });
     });
-    getAllPlants();
-    callAllPlantsAPI();
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      if(currentPage<totalPages){
-        callAllPlantsAPI();
-      }
-    }
-  }
-
-  Future<void> getAllPlants() async {
-    var plants = await AllPlantStorage.getAllPlants();
-    setState(() {
-      searchPlantList = plants;
+    AllPlantStorage.getAllPlants().then((value){
+      setState(() {
+       plantsList = value;
+      });
     });
+    callAllPlantsAPI();
   }
 
   @override
@@ -106,7 +65,7 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
       AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Theme.of(context).primaryColor,
-        title: searchPlantList!=null?CustomAppBar(plantList:searchPlantList!):Container(),
+        title: CustomAppBar(plantList:plantsList),
         actions: [
           IconButton(
               icon: const Icon(Icons.close),
@@ -178,13 +137,12 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
         child: Stack(
           children: [
             ListView.builder(
-                controller: _scrollController,
                 itemCount: plantsList.length,
                 itemBuilder: (context, index) {
                   return listChild(index);
                 }),
             Visibility(
-              visible: isLoading,
+              visible: false,
               child: Container(
                 color: Colors.black.withOpacity(.75),
                 width: double.infinity,
@@ -215,11 +173,7 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
 
   Widget listChild(int index) {
     List<String> nameList = plantsList[index].name.toString().split('|');
-    Uint8List? bytes;
     double radius = MediaQuery.of(context).size.height*.03;
-    if(plantsList[index].image256 is String && plantsList[index].image256.isNotEmpty) {
-      bytes = base64.decode(plantsList[index].image256);
-    }
     return InkWell(
       onTap: (){
         Navigator.of(context).push(
@@ -232,21 +186,13 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
           children: [
             Container(
               margin: const EdgeInsets.all(12),
-              child: bytes == null
-                  ? CircleAvatar(
+              child: CircleAvatar(
                       radius: radius, // Image radius
                       backgroundColor: Theme.of(context).primaryColor,
-                      backgroundImage: const NetworkImage(
-                          'https://www.ugaoo.com/cdn/shop/products/ajwain-plant-32220864446596.jpg'))
-                  : ClipOval(
-                      child: Image.memory(
-                        // Decode the base64 string into Uint8List
-                        bytes,
-                        width: radius*2, // Set the desired width
-                        height: radius*2, // Set the desired height
-                        fit: BoxFit.cover, // Adjust this to your needs
-                      ),
-                    ),
+                      backgroundImage: NetworkImage(
+                          '${Constants.imageBaseURL}${plantsList[index].id.toString()}&field=image_128',
+                      headers: headersMap)
+              )
             ),
             Expanded(
               child: Column(

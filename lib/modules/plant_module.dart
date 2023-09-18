@@ -29,7 +29,7 @@ class PlantsResponseModule {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['count'] = count;
     data['prev'] = prev;
     data['current'] = current;
@@ -44,45 +44,32 @@ class PlantsResponseModule {
 
 class Plants {
   int? id;
-  double? price;
-  double? listPrice;
-  double? standardPrice;
   String? name;
   dynamic description;
-  dynamic image256;
   dynamic vegetationType;
-  dynamic plantAverageLifeSpan;
-  dynamic plantMaxHeight;
+  dynamic origin;
+  dynamic canopyType;
   dynamic economicImportance;
-  dynamic plantTemperature;
   List<int>? plantHabitImage;
   List<int>? plantStemImage;
   List<int>? plantLeafImage;
   List<int>? plantInflorescenceImage;
   List<int>? plantFlowerImage;
+  List<AttributeLineIds>? attributeLineIds;
 
   Plants(
       {this.id,
-        this.price,
-        this.listPrice,
-        this.standardPrice,
         this.name,
-        this.description,
-        this.image256});
+        this.description});
 
   Plants.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    price = json['price'];
-    listPrice = json['list_price'];
-    standardPrice = json['standard_price'];
     name = json['name'];
     description = json['description'];
-    image256 = json['image_256'];
+    origin = json["origin"];
+    canopyType = json["x_CanopyType"];
     vegetationType= json['vegetation_type'];
-    plantAverageLifeSpan= json['plant_average_life_span'];
-    plantMaxHeight= json['plant_max_height'];
-    economicImportance= json['x_EconomicImportance'];
-    plantTemperature= json['plant_temperature'];
+    economicImportance= json['x_EconomicValue'];
     if(json['plant_habit_image']!=null){
       plantHabitImage = json['plant_habit_image'].cast<int>();
     }
@@ -102,27 +89,72 @@ class Plants {
     if(json['plant_flower_image']!=null){
       plantLeafImage = json['plant_flower_image'].cast<int>();
     }
+    if (json['attribute_line_ids'] != null) {
+      attributeLineIds = <AttributeLineIds>[];
+      json['attribute_line_ids'].forEach((v) {
+        attributeLineIds!.add(AttributeLineIds.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
-    data['price'] = price;
-    data['list_price'] = listPrice;
-    data['standard_price'] = standardPrice;
     data['name'] = name;
     data['description'] = description;
-    data['image_256'] = image256;
     data['vegetation_type']=vegetationType;
-    data['plant_average_life_span']=plantAverageLifeSpan;
-    data['plant_max_height']=plantMaxHeight;
     data['x_EconomicImportance']=economicImportance;
-    data['plant_temperature']=plantTemperature;
     data['plant_habit_image'] = plantHabitImage;
     data['plant_stem_image'] = plantStemImage;
     data['plant_leaf_image'] = plantLeafImage;
     data['plant_inflorescence_image'] =  plantInflorescenceImage;
     data['plant_flower_image'] = plantFlowerImage;
+    if (attributeLineIds != null) {
+      data['attribute_line_ids'] =
+          attributeLineIds!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class AttributeLineIds {
+  String? displayName;
+  List<ValueIds>? valueIds;
+
+  AttributeLineIds({this.displayName, this.valueIds});
+
+  AttributeLineIds.fromJson(Map<String, dynamic> json) {
+    displayName = json['display_name'];
+    if (json['value_ids'] != null) {
+      valueIds = <ValueIds>[];
+      json['value_ids'].forEach((v) {
+        valueIds!.add(ValueIds.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['display_name'] = displayName;
+    if (valueIds != null) {
+      data['value_ids'] = valueIds!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class ValueIds {
+  String? name;
+
+  ValueIds({this.name});
+
+  ValueIds.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = name;
     return data;
   }
 }

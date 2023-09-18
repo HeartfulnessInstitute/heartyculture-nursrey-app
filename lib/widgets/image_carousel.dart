@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
@@ -56,14 +55,11 @@ class _ImageCarouselState extends State<ImageCarousel> {
             },
             itemBuilder: (context, index) {
               return sessionId != null
-                  ? widget.imageList[index] is int
-                      ? Image.network(
-                          "https://erp.heartyculturenursery.com/web/content/${widget.imageList[index]}",
+                  ? Image.network(
+                          widget.imageList[index],
                           headers: headersMap,
                           fit: BoxFit.cover,
                         )
-                      : Image.memory(base64.decode(widget.imageList[index]),
-                          fit: BoxFit.cover)
                   : Center(
                       child: CircularProgressIndicator(
                         color: Theme.of(context).primaryColor,

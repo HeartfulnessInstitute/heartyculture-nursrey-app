@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../modules/maintenance_module.dart';
 import 'maintenance_list_screen.dart';
 
 class FertilizingScreen extends StatefulWidget {
-  const FertilizingScreen({super.key});
+  const FertilizingScreen({super.key, required this.maintenanceList});
+
+  final List<MaintenanceModule> maintenanceList;
 
   @override
   State<FertilizingScreen> createState() => _FertilizingScreenState();
@@ -77,7 +80,8 @@ class _FertilizingScreenState extends State<FertilizingScreen> {
                       ),
                       child: InkWell(
                         onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>const MaintenanceListScreen()));
+                          var selectedMaintenance = widget.maintenanceList.firstWhere((element) => element.name=="Home Remedy");
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>MaintenanceListScreen(maintenanceModule: selectedMaintenance)));
                         },
                         child: Row(
                           children: [
@@ -131,7 +135,8 @@ class _FertilizingScreenState extends State<FertilizingScreen> {
                       ),
                       child: InkWell(
                         onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>const MaintenanceListScreen()));
+                          var selectedMaintenance = widget.maintenanceList.firstWhere((element) => element.name=="Bio / Organic");
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>MaintenanceListScreen(maintenanceModule: selectedMaintenance)));
                         },
                         child: Row(
                           children: [
@@ -185,7 +190,8 @@ class _FertilizingScreenState extends State<FertilizingScreen> {
                       ),
                       child: InkWell(
                         onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>const MaintenanceListScreen()));
+                          var selectedMaintenance = widget.maintenanceList.firstWhere((element) => element.name=="Chemical fertilizers");
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>MaintenanceListScreen(maintenanceModule: selectedMaintenance)));
                         },
                         child: Row(
                           children: [

@@ -1,11 +1,11 @@
-import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import '../constants.dart';
 import '../modules/plant_module.dart';
 import '../preference_storage/my_plants_preference_notifier.dart';
+import '../preference_storage/storage_notifier.dart';
 import 'plant_screen.dart';
 
 class MyPlantsScreen extends StatefulWidget {
@@ -19,9 +19,16 @@ class _MyPlantsScreenState extends State<MyPlantsScreen> {
   List<Plants> plantsList = [];
   bool isSearch = false;
 
+  late Map<String, String> headersMap;
+
   @override
   void initState() {
     super.initState();
+    SessionTokenPreference.getSessionToken().then((value){
+      setState(() {
+        headersMap = {'Cookie': value};
+      });
+    });
   }
 
   @override
@@ -91,11 +98,7 @@ class _MyPlantsScreenState extends State<MyPlantsScreen> {
 
   Widget listChild(int index) {
     List<String> nameList = plantsList[index].name.toString().split('|');
-    Uint8List? bytes;
     double radius = MediaQuery.of(context).size.height*.03;
-    if(plantsList[index].image256 is String && plantsList[index].image256.isNotEmpty) {
-      bytes = base64.decode(plantsList[index].image256);
-    }
     return InkWell(
       onTap: (){
         Navigator.of(context).push(
@@ -108,21 +111,13 @@ class _MyPlantsScreenState extends State<MyPlantsScreen> {
           children: [
             Container(
               margin: const EdgeInsets.all(12),
-              child: bytes == null
-                  ? CircleAvatar(
+              child: CircleAvatar(
                   radius: radius, // Image radius
                   backgroundColor: Theme.of(context).primaryColor,
-                  backgroundImage: const NetworkImage(
-                      'https://www.ugaoo.com/cdn/shop/products/ajwain-plant-32220864446596.jpg'))
-                  : ClipOval(
-                child: Image.memory(
-                  // Decode the base64 string into Uint8List
-                  bytes,
-                  width: radius*2, // Set the desired width
-                  height: radius*2, // Set the desired height
-                  fit: BoxFit.cover, // Adjust this to your needs
-                ),
-              ),
+                  backgroundImage: NetworkImage(
+                      '${Constants.imageBaseURL}${plantsList[index].id.toString()}&field=image_128',
+                      headers: headersMap)
+              )
             ),
             Expanded(
               child: Column(

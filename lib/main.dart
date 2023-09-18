@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hcn_flutter/preference_storage/notification_preferences.dart';
+import 'preference_storage/notification_preferences.dart';
 import 'notofications/notification_controller.dart';
 import 'preference_storage/my_plants_preference_notifier.dart';
 import 'screens/plant_screen.dart';

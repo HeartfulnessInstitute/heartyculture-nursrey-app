@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:developer';
-import 'dart:typed_data';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,39 +28,36 @@ class _PlantScreenState extends State<PlantScreen> {
   List<Plants>myPlantsList = [];
   Plants? plantPresent;
 
+  late Map<String, String> headersMap;
+
   @override
   void initState() {
     super.initState();
     callGetSpecificPlantAPI();
+    SessionTokenPreference.getSessionToken().then((value){
+      setState(() {
+        headersMap = {'Cookie': value};
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    Uint8List? bytes;
     if(plants!=null){
       myPlantsList =Provider.of<MyPlantsPreferenceNotifier>(context, listen: true).myPlantsList;
       plantPresent = myPlantsList.firstWhereOrNull((element)=>element.id==plants!.id);
-      if(plants?.image256 is String && plants?.image256.isNotEmpty) {
-        bytes = base64.decode(plants?.image256);
-      }
     }
     return Scaffold(
       body: SafeArea(
         child: plants != null
             ? Stack(
                 children: [
-                  bytes == null
-                      ? Image.network(
-                          'https://www.ugaoo.com/cdn/shop/products/ajwain-plant-32220864446596.jpg',
+                  Image.network(
+                          '${Constants.imageBaseURL}${plants!.id.toString()}&field=image_256',
                           width: double.infinity,
                           height: MediaQuery.of(context).size.height / 2,
                           fit: BoxFit.cover,
-                        )
-                      : Image.memory(
-                          bytes,
-                          width: double.infinity,
-                          height: MediaQuery.of(context).size.height / 2,
-                          fit: BoxFit.cover,
+                          headers: headersMap,
                         ),
                   Positioned(
                     top: 0,
@@ -247,10 +242,7 @@ class _PlantScreenState extends State<PlantScreen> {
   void specificPlantAPI(String cookie) async {
     try{
       var query =
-          "{id, price, list_price, standard_price, name, description, image_256"
-          ",vegetation_type,plant_average_life_span,plant_max_height"
-          ",plant_temperature,plant_habit_image,plant_stem_image"
-          ",plant_leaf_image,plant_inflorescence_image,plant_flower_image}";
+         "{id, name,vegetation_type, origin, x_CanopyType, x_EconomicValue, attribute_line_ids{display_name, value_ids{name}}}";
       var response = await ApiServiceSingleton.instance
           .getSpecificPlant(cookie, query, widget.plantId);
       if(response.response.statusCode == 200){

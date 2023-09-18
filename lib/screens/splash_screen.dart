@@ -44,6 +44,7 @@ class SplashScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 try {
+                  showLoadingDialog(context);
                   SessionModule sessionModule = SessionModule();
                   Params params = Params();
                   params.db = Constants.db;
@@ -53,6 +54,7 @@ class SplashScreen extends StatelessWidget {
                   ApiServiceSingleton.instance
                       .getSessionCookie(sessionModule)
                       .then((response) {
+                        hideLoadingDialog(context);
                     final cookies = response.response.headers['set-cookie'];
                     List<String>? parts = cookies?[0].split(';');
                     String? sessionId = parts?[0].trim();
@@ -88,4 +90,35 @@ class SplashScreen extends StatelessWidget {
       ),
     );
   }
+
+  void showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent users from dismissing the dialog by tapping outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Row(
+            children: <Widget>[
+              CircularProgressIndicator(
+                color: Theme.of(context).primaryColor,
+              ),
+              const SizedBox(width: 20),
+              Text("Please Wait...",
+                  style: GoogleFonts.nunito(
+                      textStyle: const TextStyle(
+                          fontSize: 18,
+                          color: Color(0xff212121),
+                          fontWeight: FontWeight.w400))
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void hideLoadingDialog(BuildContext context) {
+    Navigator.of(context).pop(); // Close the dialog
+  }
+
 }

@@ -4,4 +4,5 @@ abstract class Constants {
   static const db = "hc-nursery";
   static const login = "vignesh.manickam@volunteer.heartfulness.org";
   static const password = "hcnVignesh";
+  static const imageBaseURL = 'https://erp.heartyculturenursery.com/web/image?model=product.template&id=';
 }
