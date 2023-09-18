@@ -6,6 +6,7 @@ import '../modules/plant_module.dart';
 
 
 const String ALL_PLANTS_KEY = "ALL_PLANTS_KEY";
+const String ALL_PLANTS_KEY_DETAILED = "ALL_PLANTS_KEY_DETAILED";
 
 class AllPlantStorage {
   static Future<void> setAllPlants(List<Plants> plantsList)async {
@@ -24,6 +25,30 @@ class AllPlantStorage {
     var jsonString ="";
     if (prefs.getString(ALL_PLANTS_KEY) != null) {
       jsonString = prefs.getString(ALL_PLANTS_KEY)!;
+    } else {
+      return [];
+    }
+    List<dynamic> jsonList = jsonDecode(jsonString);
+    List<Plants> plantsList = jsonList.map((json) => Plants.fromJson(json)).toList();
+    return plantsList;
+  }
+
+  static Future<void> setAllPlantsDetailed(List<Plants> plantsList)async {
+    final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    List<Map<String, dynamic>> jsonList = plantsList.map((e) => e.toJson()).toList();
+    String jsonString = jsonEncode(jsonList);
+    final SharedPreferences prefs = await _prefs;
+    prefs
+        .setString(ALL_PLANTS_KEY_DETAILED, jsonString)
+        .then((bool success) {});
+  }
+
+  static Future<List<Plants>> getAllPlantsDetailed() async {
+    final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    final SharedPreferences prefs = await _prefs;
+    var jsonString ="";
+    if (prefs.getString(ALL_PLANTS_KEY_DETAILED) != null) {
+      jsonString = prefs.getString(ALL_PLANTS_KEY_DETAILED)!;
     } else {
       return [];
     }

@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SubMaintenanceScreen extends StatefulWidget {
-  const SubMaintenanceScreen({super.key, required this.screenIndex});
-
-  final int screenIndex;
+class MaintenanceDetailScreen extends StatefulWidget {
+  const MaintenanceDetailScreen({super.key});
 
   @override
-  State<SubMaintenanceScreen> createState() => _SubMaintenanceScreenState();
+  State<MaintenanceDetailScreen> createState() => _MaintenanceDetailScreenState();
 }
 
-class _SubMaintenanceScreenState extends State<SubMaintenanceScreen> {
+class _MaintenanceDetailScreenState extends State<MaintenanceDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,72 +24,38 @@ class _SubMaintenanceScreenState extends State<SubMaintenanceScreen> {
               width: double.infinity,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                      widget.screenIndex == 0
-                          ? "Fertilizing"
-                          : widget.screenIndex == 1
-                              ? "Insect Pests"
-                              : "Diseases",
+                  Text("Turmeric",
                       style: GoogleFonts.nunito(
                           textStyle: const TextStyle(
                               fontSize: 18,
                               color: Color(0xff212121),
                               fontWeight: FontWeight.w700))),
-                  Image.asset(
-                    widget.screenIndex == 0
-                        ? "assets/images/fertilizing_icon.png"
-                        : widget.screenIndex == 1
-                        ?  "assets/images/insect_pests_icon.png"
-                        :  "assets/images/diseases_icon.png",
-                    height: MediaQuery.of(context).size.height * .35,
+                  Image.network(
+                    "https://cdn.pixabay.com/photo/2013/07/13/11/45/play-158609_1280.png",
+                    height: MediaQuery.of(context).size.height * .28,
                   ),
                   SizedBox(
                     width: double.infinity,
-                    child: Text("Active Growth Period",
+                    child: Text(
+                        "How to Use Trichoderma Viride (Bio-Fungicide) in Garden | Organic Protection for Plants (ENGLISH)",
+                        textAlign: TextAlign.start,
+                        style: GoogleFonts.nunito(
+                            textStyle: const TextStyle(
+                                fontSize: 20,
+                                color: Color(0xff212121),
+                                fontWeight: FontWeight.w800))),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text("Description",
                         textAlign: TextAlign.start,
                         style: GoogleFonts.nunito(
                             textStyle: const TextStyle(
                                 fontSize: 18,
                                 color: Color(0xff212121),
-                                fontWeight: FontWeight.w700))),
-                  ),
-                  Container(
-                    child: GridView.builder(
-                        shrinkWrap: true,
-                        itemCount: 6,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                                childAspectRatio: 2,
-                                crossAxisCount: 5),
-                        itemBuilder: (context, index) {
-                          return Container(
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(20))),
-                              alignment: Alignment.center,
-                              child: Text("MAR",
-                                  textAlign: TextAlign.start,
-                                  style: GoogleFonts.nunito(
-                                      textStyle: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700))));
-                        }),
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Text("Method",
-                        textAlign: TextAlign.start,
-                        style: GoogleFonts.nunito(
-                            textStyle: const TextStyle(
-                                fontSize: 18,
-                                color: Color(0xff212121),
-                                fontWeight: FontWeight.w700))),
+                                fontWeight: FontWeight.w400))),
                   ),
                   Container(
                       decoration: const BoxDecoration(
@@ -100,8 +64,8 @@ class _SubMaintenanceScreenState extends State<SubMaintenanceScreen> {
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
                       child: Text(
-                          "Apply NPK monthly during active growth period (Mar, Apr, May, Jun, Sep, Oct). Apply balanced fertilizer (19:19:19) during normal growth period",
-                          textAlign: TextAlign.start,
+                          "Apply NPK monthly during active growth period (Mar, Apr, May, Jun, Sep, Oct). Apply balanced fertilizer (19:19:19) during normal growth period. Apply Bioagents Trichoderma viride or Pseudomonas fluorescens or Bacillus subtilis @ 10-15 ml or gm /lit for wilts, leafspots and root rots. Apply NPK monthly during active growth period (Mar, Apr, May, Jun, Sep, Oct). Apply balanced fertilizer (19:19:19) during normal growth period. ",
+                          textAlign: TextAlign.justify,
                           style: GoogleFonts.nunito(
                               textStyle: const TextStyle(
                                   fontSize: 16,

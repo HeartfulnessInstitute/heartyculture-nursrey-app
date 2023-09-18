@@ -56,7 +56,7 @@ class _MyPlantsScreenState extends State<MyPlantsScreen> {
             style: GoogleFonts.nunito(
                 textStyle: const TextStyle(
                     color: Colors.white, fontWeight: FontWeight.w400))),
-        actions: [
+       /* actions: [
           IconButton(
               icon: const Icon(Icons.search),
               tooltip: 'Search',
@@ -73,7 +73,7 @@ class _MyPlantsScreenState extends State<MyPlantsScreen> {
               icon: const Icon(Icons.notifications),
               tooltip: 'Search',
               onPressed: () {})
-        ],
+        ],*/
       ),
       body: Container(
         child: Stack(

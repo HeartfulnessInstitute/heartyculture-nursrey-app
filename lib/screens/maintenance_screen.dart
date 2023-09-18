@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'sub_maintenance_screen.dart';
+import 'fertilizing_screen.dart';
+import 'maintenance_list_screen.dart';
 
 class MaintenanceScreen extends StatefulWidget {
   const MaintenanceScreen({super.key});
@@ -38,7 +38,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
           InkWell(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const SubMaintenanceScreen(screenIndex:0)));
+                  builder: (context) => const FertilizingScreen()));
             },
             child: Card(
               elevation: 10,
@@ -82,7 +82,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
           InkWell(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const SubMaintenanceScreen(screenIndex:1)));
+                  builder: (context) => const MaintenanceListScreen()));
             },
             child: Card(
               elevation: 10,
@@ -126,7 +126,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
           InkWell(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const SubMaintenanceScreen(screenIndex:2)));
+                  builder: (context) => const MaintenanceListScreen()));
             },
             child: Card(
               elevation: 10,

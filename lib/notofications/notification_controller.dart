@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import '../modules/notification_module.dart';
 import '../modules/plant_module.dart';
+import '../preference_storage/notification_preferences.dart';
 
 class NotificationController {
   static ReceivedAction? initialAction;
@@ -33,11 +35,24 @@ class NotificationController {
     // Get initial notification action is optional
     initialAction = await AwesomeNotifications()
         .getInitialNotificationAction(removeFromActionEvents: false);
+    startListeningNotificationEvents();
   }
 
   static Future<void> startListeningNotificationEvents() async {
     AwesomeNotifications()
-        .setListeners(onActionReceivedMethod: onActionReceivedMethod);
+        .setListeners(onActionReceivedMethod: onActionReceivedMethod,
+        onNotificationDisplayedMethod:onNotificationDisplayedMethod);
+  }
+
+  @pragma('vm:entry-point')
+  static Future<void> onNotificationDisplayedMethod(
+      ReceivedNotification receivedNotification) async {
+     NotificationModule notificationModule = NotificationModule();
+     notificationModule.id= DateTime.now().microsecondsSinceEpoch.toString();
+     notificationModule.notificationDescription = "Your Plant needs water. Kindly  water it, before it dies!";
+     notificationModule.notificationType = "Water";
+     notificationModule.plantName = receivedNotification.payload?["plantName"];
+     NotificationPreferenceHelper.addNotificationToList(notificationModule);
   }
 
   @pragma('vm:entry-point')
@@ -73,7 +88,7 @@ class NotificationController {
     final Directory tempDir = await getTemporaryDirectory();
     final File tempFile = File('${tempDir.path}/temp_image.png');
     await tempFile.writeAsBytes(imageBytes);
-
+    var payLoad = {'plantId': plants.id!.toString(),'plantName': plants.name!.toString()};
     //Send notification at that time
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
@@ -87,7 +102,7 @@ class NotificationController {
           largeIcon: 'https://storage.googleapis.com/cms-storage-bucket/0dbfcc7a59cd1cf16282.png',
           //'asset://assets/images/balloons-in-sky.jpg',
           notificationLayout: NotificationLayout.BigPicture,
-          payload: {'notificationId': '1234567890'}));
+          payload: payLoad));
 
     //Schedule notification periodically
     await AwesomeNotifications().createNotification(
@@ -102,8 +117,8 @@ class NotificationController {
             largeIcon: 'https://storage.googleapis.com/cms-storage-bucket/0dbfcc7a59cd1cf16282.png',
             //'asset://assets/images/balloons-in-sky.jpg',
             notificationLayout: NotificationLayout.BigPicture,
-            payload: {'notificationId': '1234567890'}),
-        schedule: NotificationInterval(interval: 60*60, preciseAlarm: true,timeZone: localTimeZone, repeats: true,allowWhileIdle: true),
+            payload: payLoad),
+        schedule: NotificationInterval(interval: 60*1, preciseAlarm: true,timeZone: localTimeZone, repeats: true,allowWhileIdle: true),
         /*actionButtons: [
           NotificationActionButton(key: 'REDIRECT', label: 'Redirect'),
           NotificationActionButton(

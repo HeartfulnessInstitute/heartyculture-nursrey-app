@@ -34,13 +34,14 @@ class _PlantScreenState extends State<PlantScreen> {
   void initState() {
     super.initState();
     callGetSpecificPlantAPI();
-    myPlantsList =Provider.of<MyPlantsPreferenceNotifier>(context, listen: false).myPlantsList;
   }
 
   @override
   Widget build(BuildContext context) {
     Uint8List? bytes;
     if(plants!=null){
+      myPlantsList =Provider.of<MyPlantsPreferenceNotifier>(context, listen: true).myPlantsList;
+      plantPresent = myPlantsList.firstWhereOrNull((element)=>element.id==plants!.id);
       if(plants?.image256 is String && plants?.image256.isNotEmpty) {
         bytes = base64.decode(plants?.image256);
       }
@@ -91,10 +92,7 @@ class _PlantScreenState extends State<PlantScreen> {
                     alignment: Alignment.bottomCenter,
                     child: Container(
                       decoration: const BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(20),
-                              topLeft: Radius.circular(20))),
+                          color: Colors.white),
                       height: MediaQuery.of(context).size.height / 2,
                       width: double.infinity,
                       child: Column(
@@ -110,7 +108,7 @@ class _PlantScreenState extends State<PlantScreen> {
                                   style: GoogleFonts.nunito(
                                       textStyle: const TextStyle(
                                     fontSize: 32,
-                                    color: Colors.white,
+                                    color: Color(0xff212121),
                                     fontWeight: FontWeight.w700,
                                   )),
                                 ),
@@ -119,7 +117,7 @@ class _PlantScreenState extends State<PlantScreen> {
                                   style: GoogleFonts.nunito(
                                       textStyle: const TextStyle(
                                     fontSize: 18,
-                                    color: Colors.white,
+                                    color: Color(0xff212121),
                                     fontWeight: FontWeight.w400,
                                   )),
                                 ),
@@ -130,7 +128,7 @@ class _PlantScreenState extends State<PlantScreen> {
                             width: double.infinity,
                             margin: const EdgeInsets.only(left: 25, right: 25),
                             child: ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   if(plantPresent!=null){
                                     Provider.of<MyPlantsPreferenceNotifier>(context, listen: false).removePlantFromList(plants!);
                                     NotificationController.stopNotifications(plants!);
@@ -140,6 +138,8 @@ class _PlantScreenState extends State<PlantScreen> {
                                   }
                                 },
                                 style: ButtonStyle(
+                                    overlayColor: MaterialStateProperty.all(Theme.of(context).primaryColor.withOpacity(.2)),
+                                    elevation: MaterialStateProperty.all(0),
                                     backgroundColor:
                                         MaterialStateProperty.all(Colors.white),
                                     padding: MaterialStateProperty.all(
@@ -147,6 +147,7 @@ class _PlantScreenState extends State<PlantScreen> {
                                     shape: MaterialStateProperty.all<
                                             RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
+                                            side: BorderSide(color: Theme.of(context).primaryColor,width: 2),
                                             borderRadius:
                                                 BorderRadius.circular(50.0)))),
                                 child: Text(
@@ -165,6 +166,7 @@ class _PlantScreenState extends State<PlantScreen> {
                             child: ElevatedButton(
                                 onPressed: () {},
                                 style: ButtonStyle(
+                                    elevation: MaterialStateProperty.all(0),
                                     backgroundColor:
                                         MaterialStateProperty.all(Colors.white),
                                     padding: MaterialStateProperty.all(
@@ -172,6 +174,7 @@ class _PlantScreenState extends State<PlantScreen> {
                                     shape: MaterialStateProperty.all<
                                             RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
+                                            side: BorderSide(color: Theme.of(context).primaryColor,width: 2),
                                             borderRadius:
                                                 BorderRadius.circular(50.0)))),
                                 child: Text(
@@ -246,14 +249,13 @@ class _PlantScreenState extends State<PlantScreen> {
       var query =
           "{id, price, list_price, standard_price, name, description, image_256"
           ",vegetation_type,plant_average_life_span,plant_max_height"
-          ",x_EconomicImportance,plant_temperature,plant_habit_image,plant_stem_image"
+          ",plant_temperature,plant_habit_image,plant_stem_image"
           ",plant_leaf_image,plant_inflorescence_image,plant_flower_image}";
       var response = await ApiServiceSingleton.instance
           .getSpecificPlant(cookie, query, widget.plantId);
       if(response.response.statusCode == 200){
         setState(() {
           plants = response.data;
-          plantPresent = myPlantsList.firstWhereOrNull((element)=>element.id==plants!.id);
         });
       }else{
         setState(() {

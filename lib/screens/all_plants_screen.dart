@@ -3,8 +3,12 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../modules/notification_module.dart';
 import '../modules/plant_module.dart';
 import '../preference_storage/all_plants_local_preference.dart';
+import '../preference_storage/notification_preferences.dart';
+import 'notifications_screen.dart';
 import 'plant_screen.dart';
 import '../network/api_service_singelton.dart';
 import '../preference_storage/storage_notifier.dart';
@@ -27,11 +31,15 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
   //list to search plants, list without pagination list
   List<Plants>? searchPlantList;
 
+  late List<NotificationModule> notificationList;
+
   Future<void> callAllPlantsAPI() async {
     if (!isLoading) {
-      setState(() {
-        isLoading = true;
-      });
+      if(currentPage!=1){
+        setState(() {
+          isLoading = true;
+        });
+      }
       var query = "{id, price, list_price, standard_price, name, description, image_256}";
       var filter = '[["categ_id", "=", "HCN Plants"]]';
       var pageSize = 50;
@@ -39,8 +47,15 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
       var response = await ApiServiceSingleton.instance.getPlants(
           cookie, query, filter, pageSize, currentPage);
       if (response.result != null) {
+        if(currentPage==1 && response.result!=null){
+          AllPlantStorage.setAllPlantsDetailed(response.result!);
+        }
         setState(() {
-          plantsList.addAll(response.result as Iterable<Plants>);
+          if(currentPage==1){
+            plantsList =  response.result!;
+          }else{
+            plantsList.addAll(response.result as Iterable<Plants>);
+          }
           totalPages = response.totalPages!;
           currentPage++;
           isLoading = false;
@@ -53,6 +68,11 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    AllPlantStorage.getAllPlantsDetailed().then((value){
+      setState(() {
+        plantsList = value;
+      });
+    });
     getAllPlants();
     callAllPlantsAPI();
   }
@@ -118,10 +138,40 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
               icon: const Icon(Icons.sort),
               tooltip: 'Search',
               onPressed: () {}),
-          IconButton(
-              icon: const Icon(Icons.notifications),
-              tooltip: 'Search',
-              onPressed: () {})
+          InkWell(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>const NotificationScreen()));
+            },
+            child: Center(
+              child: Badge(
+                largeSize: getNotificationCount().isEmpty?0:30,
+                offset: const Offset(2,1),
+                backgroundColor: Colors.transparent,
+                label: Container(
+                  padding: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Theme.of(context).primaryColor),
+                      color: Colors.white
+                  ),
+                  child: Text(
+                      getNotificationCount(),
+                      style: GoogleFonts.nunito(
+                          textStyle: TextStyle(
+                            fontSize: 10,
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.w400,
+                          ))),
+                ),
+                child: IconButton(
+                    icon: const Icon(Icons.notifications),
+                    tooltip: 'Notifications',
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>const NotificationScreen()));
+                    }),
+              ),
+            ),
+          )
         ],
       ),
       body: Container(
@@ -150,6 +200,17 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
         ),
       ),
     );
+  }
+
+  String getNotificationCount(){
+    var count = Provider.of<NotificationNotifier>(
+        context, listen: true).notificationList.length;
+    if(count==0){
+      return "";
+    }else{
+      return count.toString();
+    }
+
   }
 
   Widget listChild(int index) {
@@ -246,7 +307,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             VoidCallback onFieldSubmitted) {
           textEditingController = textEditingControllerRest;
           return TextField(
-              autofocus: false,
+              autofocus: true,
               controller: textEditingController,
               focusNode: fieldFocusNode,
               textAlign: TextAlign.left,

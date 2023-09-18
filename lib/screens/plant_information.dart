@@ -318,7 +318,7 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "Categ_id",
+                                            "Category",
                                             style: GoogleFonts.nunito(
                                                 textStyle: const TextStyle(
                                                   fontSize: 15,
@@ -342,7 +342,7 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "Height",
+                                            "Canopy",
                                             style: GoogleFonts.nunito(
                                                 textStyle: const TextStyle(
                                                   fontSize: 15,
@@ -370,7 +370,7 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "Blooming Season",
+                                            "Nativity",
                                             style: GoogleFonts.nunito(
                                                 textStyle: const TextStyle(
                                                   fontSize: 15,
