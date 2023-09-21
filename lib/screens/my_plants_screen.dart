@@ -89,7 +89,20 @@ class _MyPlantsScreenState extends State<MyPlantsScreen> {
                 itemCount: plantsList.length,
                 itemBuilder: (context, index) {
                   return listChild(index);
-                })
+                }),
+            Visibility(
+                visible: plantsList.isEmpty,
+                child: Center(
+                  child: Text(
+                      "No plant added yet.\nOnce you add a plant, it will appear here.",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.nunito(
+                          textStyle: const TextStyle(
+                        fontSize: 18,
+                        color: Color(0xff5e5e5e),
+                        fontWeight: FontWeight.w600,
+                      ))),
+                ))
           ],
         ),
       ),

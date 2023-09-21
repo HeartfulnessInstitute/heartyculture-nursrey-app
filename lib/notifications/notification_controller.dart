@@ -4,6 +4,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../constants.dart';
 import '../modules/notification_module.dart';
 import '../modules/plant_module.dart';
@@ -56,7 +57,7 @@ class NotificationController {
        notificationModule.notificationType = Constants.fertilizer_notification_type;
        notificationModule.plantName = Constants.fertilizer_notification_title;
      }else if (receivedNotification.payload?["notification_type"] == Constants.water_notification_type){
-       notificationModule.notificationDescription = Constants.water_notification_desc;
+       notificationModule.notificationDescription = 'Please water your plant - ${receivedNotification.payload?["plantName"]}, it needs water to survive & grow.';
        notificationModule.notificationType = Constants.water_notification_type;
        notificationModule.plantName = receivedNotification.payload?["plantName"];
      }
@@ -66,15 +67,8 @@ class NotificationController {
   @pragma('vm:entry-point')
   static Future<void> onActionReceivedMethod(
       ReceivedAction receivedAction) async {
-
-    if(
-    receivedAction.actionType == ActionType.SilentAction ||
-        receivedAction.actionType == ActionType.SilentBackgroundAction
-    ){
-
-    }
-    else {
-       var abc = "avc";
+    if(receivedAction.payload?["notification_type"] == Constants.fertilizer_notification_type){
+      launchUrl(Uri.parse("https://www.heartyculturenursery.com/collections/fertilizer"));
     }
   }
 
@@ -106,9 +100,9 @@ class NotificationController {
     var content = NotificationContent(
         id: plants.id!, // -1 is replaced by a random number
         channelKey: 'alerts',
-        title: '${plants.name} need water!',
+        title:Constants.water_notification_title,
         body:
-        Constants.water_notification_desc,
+        'Please water your plant - ${plants.name.toString()}, it needs water to survive & grow.' ,
         bigPicture: 'file://${tempFile.path}',
         //bigPicture: 'https://storage.googleapis.com/cms-storage-bucket/d406c736e7c4c57f5f61.png',
         //largeIcon: 'https://storage.googleapis.com/cms-storage-bucket/0dbfcc7a59cd1cf16282.png',
@@ -182,8 +176,8 @@ class NotificationController {
         payload: payLoad);
 
     //Send notification at that time
-    await AwesomeNotifications().createNotification(
-        content: content);
+    /*await AwesomeNotifications().createNotification(
+        content: content);*/
 
     //Schedule notification periodically
     await AwesomeNotifications().createNotification(
