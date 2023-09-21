@@ -13,7 +13,7 @@ abstract class Constants {
   static const int fertilizer_notification_id = 999999999;
   static const int fertilizer_notification_interval = 60*60*24*30;
 
-  static const String water_notification_desc ="Your Plant needs water. Kindly  water it, before it dies!";
+  static const String water_notification_title ="Time to water your Plant!";
   static const String water_notification_type = "Water";
 
 

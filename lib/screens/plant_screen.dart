@@ -56,7 +56,7 @@ class _PlantScreenState extends State<PlantScreen> {
                   Image.network(
                           '${Constants.imageBaseURL}${plants!.id.toString()}&field=image_512',
                           width: double.infinity,
-                          height: MediaQuery.of(context).size.height / 2,
+                          height: MediaQuery.of(context).size.height*.65,
                           fit: BoxFit.cover,
                           headers: headersMap,
                         ),
@@ -89,7 +89,7 @@ class _PlantScreenState extends State<PlantScreen> {
                     child: Container(
                       decoration: const BoxDecoration(
                           color: Colors.white),
-                      height: MediaQuery.of(context).size.height / 2,
+                      height: MediaQuery.of(context).size.height*.35,
                       width: double.infinity,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

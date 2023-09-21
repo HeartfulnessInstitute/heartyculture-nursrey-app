@@ -239,7 +239,7 @@ class _ContactScreenState extends State<ContactScreen> {
               children: [
                 ElevatedButton(
                     onPressed: () async {
-
+                      launchUrl(Uri.parse("https://www.linkedin.com/company/heartyculture-natural-product-llp"));
                     },
                     style: ButtonStyle(
                         elevation: MaterialStateProperty.all(0),
