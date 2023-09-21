@@ -61,6 +61,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                   builder: (context) => FertilizingScreen(maintenanceList:maintenanceList!)));
             },
             child: Card(
+              margin: const EdgeInsets.only(left: 25, right: 25),
               elevation: 10,
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(6))),
@@ -106,6 +107,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                   builder: (context) => MaintenanceListScreen(maintenanceModule: selectedMaintenance!)));
             },
             child: Card(
+              margin: const EdgeInsets.only(left: 25, right: 25),
               elevation: 10,
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(6))),
@@ -151,6 +153,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                   builder: (context) => MaintenanceListScreen(maintenanceModule: selectedMaintenance!)));
             },
             child: Card(
+              margin: const EdgeInsets.only(left: 25, right: 25),
               elevation: 10,
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(6))),

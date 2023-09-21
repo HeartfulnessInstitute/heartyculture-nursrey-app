@@ -94,7 +94,7 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
     var prefix = "https://erp.heartyculturenursery.com/web/content/";
     List<String> list = [];
     list.add(
-      "${Constants.imageBaseURL}${widget.plant.id.toString()}&field=image_256"
+      "${Constants.imageBaseURL}${widget.plant.id.toString()}&field=image_512"
     );
     if(widget.plant.plantInflorescenceImage!=null && widget.plant.plantInflorescenceImage?.isNotEmpty==true){
       list.add(prefix+widget.plant.plantInflorescenceImage![0].toString());
@@ -180,7 +180,7 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                                             fontWeight: FontWeight.w600,
                                           )),
                                     ),
-                                    ElevatedButton(
+                                    /*ElevatedButton(
                                         onPressed: () {},
                                         style: ButtonStyle(
                                             elevation: MaterialStateProperty.all(0),
@@ -206,7 +206,7 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                                                 color: Theme.of(context).primaryColor,
                                                 fontWeight: FontWeight.w400,
                                               )),
-                                        )),
+                                        )),*/
                                   ],
                                 ),
                               ),
@@ -226,7 +226,7 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                                                 )),
                                           ),
                                           Text(
-                                            widget.plant.name.toString().split('|')[0].trim(),
+                                            widget.plant.name.toString().split('|')[1].trim(),
                                             style: GoogleFonts.nunito(
                                                 textStyle: const TextStyle(
                                                   fontSize: 18,
@@ -250,7 +250,7 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                                                 )),
                                           ),
                                           Text(
-                                            widget.plant.name.toString().split('|')[1].trim(),
+                                            widget.plant.name.toString().split('|')[0].trim(),
                                             style: GoogleFonts.nunito(
                                                 textStyle: const TextStyle(
                                                   fontSize: 18,

@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../notofications/notification_controller.dart';
+import '../notifications/notification_controller.dart';
 import 'plant_information.dart';
 import 'package:provider/provider.dart';
 
@@ -53,7 +53,7 @@ class _PlantScreenState extends State<PlantScreen> {
             ? Stack(
                 children: [
                   Image.network(
-                          '${Constants.imageBaseURL}${plants!.id.toString()}&field=image_256',
+                          '${Constants.imageBaseURL}${plants!.id.toString()}&field=image_512',
                           width: double.infinity,
                           height: MediaQuery.of(context).size.height / 2,
                           fit: BoxFit.cover,
@@ -155,7 +155,7 @@ class _PlantScreenState extends State<PlantScreen> {
                                   )),
                                 )),
                           ),
-                          Container(
+                          /*Container(
                             width: double.infinity,
                             margin: const EdgeInsets.only(left: 25, right: 25),
                             child: ElevatedButton(
@@ -181,7 +181,7 @@ class _PlantScreenState extends State<PlantScreen> {
                                     fontWeight: FontWeight.w700,
                                   )),
                                 )),
-                          ),
+                          ),*/
                           Container(
                             width: double.infinity,
                             margin: const EdgeInsets.only(left: 25, right: 25),
@@ -220,7 +220,7 @@ class _PlantScreenState extends State<PlantScreen> {
                 ],
               )
             : isErrorInAPI
-                ? const Center(child: Text("Error"))
+                ? const Center(child: Text("Something went wrong!"))
                 : Center(
                     child: CircularProgressIndicator(
                       color: Theme.of(context).primaryColor,

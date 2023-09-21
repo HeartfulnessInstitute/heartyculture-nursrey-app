@@ -45,7 +45,8 @@ class PlantsResponseModule {
 class Plants {
   int? id;
   String? name;
-  dynamic description;
+  Category? category;
+  // dynamic description;
   dynamic vegetationType;
   dynamic origin;
   dynamic canopyType;
@@ -60,12 +61,14 @@ class Plants {
   Plants(
       {this.id,
         this.name,
-        this.description});
+        this.category});
 
   Plants.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-    description = json['description'];
+    category = json['categ_id'] != null
+        ? Category.fromJson(json['categ_id'])
+        : null;
     origin = json["origin"];
     canopyType = json["x_CanopyType"];
     vegetationType= json['vegetation_type'];
@@ -101,7 +104,7 @@ class Plants {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['name'] = name;
-    data['description'] = description;
+    data['categ_id'] = category!.toJson();
     data['vegetation_type']=vegetationType;
     data['x_EconomicImportance']=economicImportance;
     data['plant_habit_image'] = plantHabitImage;
@@ -155,6 +158,22 @@ class ValueIds {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['name'] = name;
+    return data;
+  }
+}
+
+class Category {
+  String? name;
+
+  Category({this.name});
+
+  Category.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = this.name;
     return data;
   }
 }

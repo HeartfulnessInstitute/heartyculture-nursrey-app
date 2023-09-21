@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../modules/maintenance_module.dart';
 import 'maintenance_detail_screen.dart';
+import 'video_screen.dart';
 
 class MaintenanceListScreen extends StatefulWidget {
   const MaintenanceListScreen({super.key,required this.maintenanceModule});
@@ -127,17 +128,21 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
       ),
       child: InkWell(
         onTap: (){
-          openUrl(listData.videoUrl!);
+          openVideoUrl(listData.videoUrl!);
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Stack(
               children: [
-                Image.network(
-                  fit: BoxFit.contain,
-                  width:double.infinity,
-                  getYouTubeThumbnail(extractVideoId(listData.videoUrl!))
+                Container(
+                  color: Colors.grey.shade100,
+                  height: 250,
+                  child: Image.network(
+                    fit: BoxFit.fitWidth,
+                    width:double.infinity,
+                    getYouTubeThumbnail(extractVideoId(listData.videoUrl!))
+                  ),
                 ),
                 Positioned.fill(
                   child: Center(
@@ -159,7 +164,7 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
                   textStyle: const TextStyle(
                     fontSize: 18,
                     color: Color(0xff212121),
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w400,
                   )),
             ),
             Text(
@@ -203,7 +208,11 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
     }
   }
 
-  void openUrl(String url) async {
-    await launchUrl(Uri.parse(url));
+  void openVideoUrl(String url)  {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => YoutubeScreen(videoURl: url)));
+    // await launchUrl(Uri.parse(url));
   }
 }
