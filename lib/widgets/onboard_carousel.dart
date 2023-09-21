@@ -40,7 +40,7 @@ class _OnboardCarouselState extends State<OnboardCarousel> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "10 Million trees Planted",
+              "10+ Million trees planted",
               textAlign: TextAlign.center,
               style: GoogleFonts.nunito(
                   textStyle: const TextStyle(
@@ -51,7 +51,7 @@ class _OnboardCarouselState extends State<OnboardCarousel> {
                   )),
             ),
         Padding(padding: EdgeInsets.all(15), child: Text(
-              "About 10 million tress has been planted across the country",
+              "More than 10 million tress planted including with healing forest across the country",
               textAlign: TextAlign.center,
               style: GoogleFonts.nunito(
                   textStyle: const TextStyle(
@@ -80,7 +80,7 @@ class _OnboardCarouselState extends State<OnboardCarousel> {
                   )),
             ),
             Padding(padding: EdgeInsets.all(15), child: Text(
-              "Wide range of plants available including 356+ endangered species",
+              "Wide range of plants available including Exotic, Endangered & Native species",
               textAlign: TextAlign.center,
               style: GoogleFonts.nunito(
                   textStyle: const TextStyle(
@@ -98,7 +98,7 @@ class _OnboardCarouselState extends State<OnboardCarousel> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "Handled by experts",
+              "20 Pan India nurseries",
               textAlign: TextAlign.center,
               style: GoogleFonts.nunito(
                   textStyle: const TextStyle(
@@ -109,7 +109,7 @@ class _OnboardCarouselState extends State<OnboardCarousel> {
                   )),
             ),
         Padding(padding: EdgeInsets.all(15), child: Text(
-              "Running 20+ Nurseries across India",
+              "Handled by Doctorates, Master Gardeners & Horticulturists",
               textAlign: TextAlign.center,
               style: GoogleFonts.nunito(
                   textStyle: const TextStyle(
