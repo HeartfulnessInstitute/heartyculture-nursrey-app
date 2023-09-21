@@ -69,11 +69,6 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
               selectedIcon: Icon(Icons.cut, color: Colors.white),
               icon: Icon(Icons.cut, color: Colors.grey),
               label: 'Maintenance',
-            ),
-            NavigationDestination(
-              selectedIcon: Icon(Icons.person, color: Colors.white),
-              icon: Icon(Icons.person, color: Colors.grey),
-              label: 'Contact',
             )
           ],
         ),
@@ -83,8 +78,6 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
             ? plantGeneral(selectedPageIndex)
             : selectedPageIndex == 2
               ? const MaintenanceScreen()
-            : selectedPageIndex == 3
-                ? const ContactScreen()
                 : Container(),
       ),
     );
@@ -480,7 +473,7 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                                                 )),
                                           ),
                                           Text(
-                                            "4 / Week",
+                                            "${widget.plant.waterFrequency.toString()} / Week",
                                             style: GoogleFonts.nunito(
                                                 textStyle: const TextStyle(
                                                   fontSize: 18,

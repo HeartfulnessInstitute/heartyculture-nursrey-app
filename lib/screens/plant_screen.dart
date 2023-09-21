@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../notifications/notification_controller.dart';
+import '../preference_storage/fertilizer_preference.dart';
 import 'plant_information.dart';
 import 'package:provider/provider.dart';
 
@@ -125,11 +126,25 @@ class _PlantScreenState extends State<PlantScreen> {
                             child: ElevatedButton(
                                 onPressed: () async {
                                   if(plantPresent!=null){
-                                    Provider.of<MyPlantsPreferenceNotifier>(context, listen: false).removePlantFromList(plants!);
+                                    await Provider.of<MyPlantsPreferenceNotifier>(context, listen: false).removePlantFromList(plants!);
                                     NotificationController.stopNotifications(plants!);
+                                    if(myPlantsList.length==1){
+                                      NotificationController.stopFertilizerNotifications();
+                                    }
+                                    showToast("Removed from your plants.");
                                   }else{
-                                    Provider.of<MyPlantsPreferenceNotifier>(context, listen: false).addPlantsToList(plants!);
+                                    await Provider.of<MyPlantsPreferenceNotifier>(context, listen: false).addPlantsToList(plants!);
                                     NotificationController.createNewNotification(plants!);
+                                    var fertilizerNotificationSent = await FertilizerPreference.getFertlizerNotificationSent();
+                                    if(!fertilizerNotificationSent){
+                                      NotificationController.createFertilizerNotification(plants!);
+                                      await FertilizerPreference.setFertlizerNotificationSent(true);
+                                    }else{
+                                      if(myPlantsList.isEmpty){
+                                        NotificationController.createFertilizerNotification(plants!);
+                                      }
+                                    }
+                                    showToast("Added to your plants.");
                                   }
                                 },
                                 style: ButtonStyle(
@@ -242,7 +257,7 @@ class _PlantScreenState extends State<PlantScreen> {
   void specificPlantAPI(String cookie) async {
     try{
       var query =
-         "{id, name,vegetation_type, origin, x_CanopyType, x_EconomicValue, attribute_line_ids{display_name, value_ids{name}}}";
+         "{id, name,vegetation_type, origin, x_CanopyType,x_Waterfrequency, x_EconomicValue, attribute_line_ids{display_name, value_ids{name}}}";
       var response = await ApiServiceSingleton.instance
           .getSpecificPlant(cookie, query, widget.plantId);
       if(response.response.statusCode == 200){
@@ -285,5 +300,17 @@ class _PlantScreenState extends State<PlantScreen> {
     } catch (e) {
       //error
     }
+  }
+  
+  void showToast(String message){
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message,
+        style: GoogleFonts.nunito(
+            textStyle: const TextStyle(
+              fontSize: 16,
+              color: Colors.white,
+              fontWeight: FontWeight.w400,
+            )),),
+    ));
   }
 }

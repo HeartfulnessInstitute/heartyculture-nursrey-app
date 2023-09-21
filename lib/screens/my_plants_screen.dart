@@ -98,11 +98,12 @@ class _MyPlantsScreenState extends State<MyPlantsScreen> {
 
   Widget listChild(int index) {
     List<String> nameList = plantsList[index].name.toString().split('|');
+    var plantId  = plantsList[index].id.toString();
     double radius = MediaQuery.of(context).size.height*.03;
     return InkWell(
       onTap: (){
         Navigator.of(context).push(
-            MaterialPageRoute(builder: (context)=>PlantScreen(plantId:plantsList[index].id.toString()))
+            MaterialPageRoute(builder: (context)=>PlantScreen(plantId:plantId))
         );
       },
       child: Card(

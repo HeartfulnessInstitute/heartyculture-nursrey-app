@@ -18,12 +18,12 @@ class NotificationController {
   ///
   static Future<void> initializeLocalNotifications() async {
     await AwesomeNotifications().initialize(
-        null, //'resource://drawable/res_app_icon',//
+        'resource://drawable/ic_launcher_transparent',
         [
           NotificationChannel(
               channelKey: 'alerts',
               channelName: 'Alerts',
-              channelDescription: 'Notification tests as alerts',
+              channelDescription: 'Notifications for the app',
               playSound: true,
               onlyAlertOnce: true,
               groupAlertBehavior: GroupAlertBehavior.Children,
@@ -51,9 +51,15 @@ class NotificationController {
       ReceivedNotification receivedNotification) async {
      NotificationModule notificationModule = NotificationModule();
      notificationModule.id= DateTime.now().microsecondsSinceEpoch.toString();
-     notificationModule.notificationDescription = "Your Plant needs water. Kindly  water it, before it dies!";
-     notificationModule.notificationType = "Water";
-     notificationModule.plantName = receivedNotification.payload?["plantName"];
+     if(receivedNotification.payload?["notification_type"] == Constants.fertilizer_notification_type) {
+       notificationModule.notificationDescription = Constants.fertilizer_notification_desc;
+       notificationModule.notificationType = Constants.fertilizer_notification_type;
+       notificationModule.plantName = Constants.fertilizer_notification_title;
+     }else if (receivedNotification.payload?["notification_type"] == Constants.water_notification_type){
+       notificationModule.notificationDescription = Constants.water_notification_desc;
+       notificationModule.notificationType = Constants.water_notification_type;
+       notificationModule.plantName = receivedNotification.payload?["plantName"];
+     }
      NotificationPreferenceHelper.addNotificationToList(notificationModule);
   }
 
@@ -68,7 +74,7 @@ class NotificationController {
 
     }
     else {
-
+       var abc = "avc";
     }
   }
 
@@ -95,37 +101,30 @@ class NotificationController {
     final Directory tempDir = await getTemporaryDirectory();
     final File tempFile = File('${tempDir.path}/temp_image.png');
     await tempFile.writeAsBytes(response.data);
-    var payLoad = {'plantId': plants.id!.toString(),'plantName': plants.name!.toString()};
+    var payLoad = {'plantId': plants.id!.toString(),'plantName': plants.name!.toString(),'notification_type':Constants.water_notification_type};
+
+    var content = NotificationContent(
+        id: plants.id!, // -1 is replaced by a random number
+        channelKey: 'alerts',
+        title: '${plants.name} need water!',
+        body:
+        Constants.water_notification_desc,
+        bigPicture: 'file://${tempFile.path}',
+        //bigPicture: 'https://storage.googleapis.com/cms-storage-bucket/d406c736e7c4c57f5f61.png',
+        //largeIcon: 'https://storage.googleapis.com/cms-storage-bucket/0dbfcc7a59cd1cf16282.png',
+        largeIcon: 'asset://assets/images/ic_launcher_transparent.png',
+        //'asset://assets/images/balloons-in-sky.jpg',
+        notificationLayout: NotificationLayout.BigPicture,
+        backgroundColor: const Color(0xff378564),
+        payload: payLoad);
     //Send notification at that time
     await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-          id: plants.id!, // -1 is replaced by a random number
-          channelKey: 'alerts',
-          title: '${plants.name} need water!',
-          body:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ",
-          bigPicture: 'file://${tempFile.path}',
-          //bigPicture: 'https://storage.googleapis.com/cms-storage-bucket/d406c736e7c4c57f5f61.png',
-          largeIcon: 'https://storage.googleapis.com/cms-storage-bucket/0dbfcc7a59cd1cf16282.png',
-          //'asset://assets/images/balloons-in-sky.jpg',
-          notificationLayout: NotificationLayout.BigPicture,
-          payload: payLoad));
+      content: content);
 
     //Schedule notification periodically
     await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-            id: plants.id!, // -1 is replaced by a random number
-            channelKey: 'alerts',
-            title: 'Time to water your plant - ${plants.name}',
-            body:
-            "A small step for a man, but a giant leap to Flutter's community!",
-            bigPicture: 'file://${tempFile.path}',
-            //bigPicture: 'https://storage.googleapis.com/cms-storage-bucket/d406c736e7c4c57f5f61.png',
-            largeIcon: 'https://storage.googleapis.com/cms-storage-bucket/0dbfcc7a59cd1cf16282.png',
-            //'asset://assets/images/balloons-in-sky.jpg',
-            notificationLayout: NotificationLayout.BigPicture,
-            payload: payLoad),
-        schedule: NotificationInterval(interval: 60*1, preciseAlarm: true,timeZone: localTimeZone, repeats: true,allowWhileIdle: true),
+        content: content,
+        schedule: NotificationInterval(interval: getIntervalFromDays(plants.waterFrequency), preciseAlarm: true,timeZone: localTimeZone, repeats: true,allowWhileIdle: true),
         /*actionButtons: [
           NotificationActionButton(key: 'REDIRECT', label: 'Redirect'),
           NotificationActionButton(
@@ -140,5 +139,60 @@ class NotificationController {
               actionType: ActionType.DismissAction,
               isDangerousOption: true)
         ]*/);
+  }
+
+  static int getIntervalFromDays(dynamic days){
+    var totalSecondsInWeek = 7*24*60*60;
+    if(days!=null && days is int){
+      int interval = (totalSecondsInWeek/days).round();
+      return interval;
+    }else{
+      int interval = (totalSecondsInWeek/3).round();
+      return interval;
+    }
+  }
+
+  static Future<void> createFertilizerNotification(Plants plants) async {
+    bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
+    if (!isAllowed) isAllowed = await displayNotificationRationale();
+    if (!isAllowed) return;
+    String localTimeZone = await AwesomeNotifications().getLocalTimeZoneIdentifier();
+    Dio dio = Dio();
+    Response response = await dio.get(
+      '${Constants.imageBaseURL}${plants.id.toString()}&field=image_256', // Replace with your image URL
+      options: Options(responseType: ResponseType.bytes,
+          headers: {'Cookie': await SessionTokenPreference.getSessionToken()}),
+    );
+    final Directory tempDir = await getTemporaryDirectory();
+    final File tempFile = File('${tempDir.path}/temp_image.png');
+    await tempFile.writeAsBytes(response.data);
+    var payLoad = {'plantId': plants.id!.toString(),'plantName': plants.name!.toString(),'notification_type':Constants.fertilizer_notification_type};
+    var content = NotificationContent(
+        id: Constants.fertilizer_notification_id, // -1 is replaced by a random number
+        channelKey: 'alerts',
+        title: Constants.fertilizer_notification_title,
+        body: Constants.fertilizer_notification_desc,
+        bigPicture: 'file://${tempFile.path}',
+        //bigPicture: 'https://storage.googleapis.com/cms-storage-bucket/d406c736e7c4c57f5f61.png',
+        //largeIcon: 'https://storage.googleapis.com/cms-storage-bucket/0dbfcc7a59cd1cf16282.png',
+        largeIcon: 'asset://assets/images/ic_launcher_transparent.png',
+        //'asset://assets/images/balloons-in-sky.jpg',
+        notificationLayout: NotificationLayout.BigPicture,
+        backgroundColor: const Color(0xff378564),
+        payload: payLoad);
+
+    //Send notification at that time
+    await AwesomeNotifications().createNotification(
+        content: content);
+
+    //Schedule notification periodically
+    await AwesomeNotifications().createNotification(
+      content: content,
+      schedule: NotificationInterval(interval: Constants.fertilizer_notification_interval, preciseAlarm: true,timeZone: localTimeZone, repeats: true,allowWhileIdle: true));
+  }
+
+  static Future<void> stopFertilizerNotifications() async {
+    await AwesomeNotifications().cancel(Constants.fertilizer_notification_id);
+    await AwesomeNotifications().cancelSchedule(Constants.fertilizer_notification_id);
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import '../constants.dart';
 import '../modules/notification_module.dart';
 import '../preference_storage/notification_preferences.dart';
 
@@ -77,7 +78,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           child: ListView.builder(
               itemCount: notificationList.length,
               itemBuilder: (context, index) {
-                return notificationListChild(index);
+                return notificationListChild(notificationList.length-1-index);
               }),
         ),
       ),
@@ -87,7 +88,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget notificationListChild(int index) {
     return Container(
         margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(6)),
           color: Colors.white,
@@ -105,7 +106,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.only(right: 10),
-            child: Image.asset("assets/images/insect_eating_leaf.png",height: MediaQuery.of(context).size.height*.08),
+            child: Image.asset(
+                notificationList[index].notificationType.toString() ==
+                        Constants.water_notification_type
+                    ? "assets/images/water_plant_icon.png"
+                    : "assets/images/fertilizer_plant_icon.png",
+                height: MediaQuery.of(context).size.height * .08),
           ),
           Expanded(
             child: Column(
@@ -113,9 +119,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
               children: [
                 Text(notificationList[index].notificationType.toString(),
                     style: GoogleFonts.nunito(
-                        textStyle: const TextStyle(
+                        textStyle: TextStyle(
                             fontSize: 13,
-                            color: Color(0xff1976D2), fontWeight: FontWeight.w400))),
+                            color: notificationList[index]
+                                        .notificationType
+                                        .toString() ==
+                                    Constants.water_notification_type
+                                ? const Color(0xff1976D2)
+                                : const Color(0xff46A62E),
+                            fontWeight: FontWeight.w400))),
                 Text(notificationList[index].plantName.toString(),
                     style: GoogleFonts.nunito(
                         textStyle: const TextStyle(
@@ -147,7 +159,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     child: Text(
                       "DONE",
                       style: GoogleFonts.nunito(
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                             fontSize: 12,
                             color: Colors.white,
                             fontWeight: FontWeight.w700,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'all_plants_screen.dart';
+import 'contact_screen.dart';
 import 'my_plants_screen.dart';
 import 'qr_code_scanner.dart';
 
@@ -55,9 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
           elevation: 20,
           selectedIndex: selectedPageIndex,
           onDestinationSelected: (int index) {
-            if (index == 2) {
-              return;
-            }
             setState(() {
               selectedPageIndex = index;
             });
@@ -73,6 +71,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   Icon(Icons.star, color: Theme.of(context).primaryColor),
               icon: Icon(Icons.star, color: Theme.of(context).primaryColor),
               label: 'My Plants',
+            ),
+            NavigationDestination(
+              selectedIcon: Icon(Icons.person, color: Theme.of(context).primaryColor),
+              icon: Icon(Icons.person, color: Theme.of(context).primaryColor),
+              label: 'Contact',
             )
           ],
         ),
@@ -81,7 +84,8 @@ class _HomeScreenState extends State<HomeScreen> {
           index: selectedPageIndex,
           children: const [
             AllPlantsScreen(),
-            MyPlantsScreen()
+            MyPlantsScreen(),
+            ContactScreen()
           ]),
     );
   }

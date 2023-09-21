@@ -30,6 +30,8 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
 
   late Map<String, String> headersMap;
 
+  TextEditingController textEditingController = TextEditingController();
+
   Future<void> callAllPlantsAPI() async {
     var query = "{id, name, categ_id{name}}";
     var filter = '[["categ_id", "like", "HCN Plants /"]]';
@@ -70,7 +72,7 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
           ? AppBar(
               automaticallyImplyLeading: false,
               backgroundColor: Theme.of(context).primaryColor,
-              title: CustomAppBar(plantList: plantsList),
+              title: customAppBar(),
               actions: [
                 IconButton(
                     icon: const Icon(Icons.close),
@@ -242,7 +244,11 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
     if (count == 0) {
       return "";
     } else {
-      return count.toString();
+      if(count >9){
+        return "9+";
+      }else{
+        return count.toString();
+      }
     }
   }
 
@@ -390,61 +396,51 @@ class _AllPlantsScreenState extends State<AllPlantsScreen> {
     }
     return newPlantList;
   }
-}
 
-class CustomAppBar extends StatefulWidget {
-  const CustomAppBar({super.key, required this.plantList});
-
-  final List<Plants> plantList;
-
-  @override
-  State<CustomAppBar> createState() => _CustomAppBarState();
-}
-
-class _CustomAppBarState extends State<CustomAppBar> {
-  TextEditingController textEditingController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget customAppBar(){
     return Container(
         child: Autocomplete<Plants>(
-      onSelected: (Plants plant) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    PlantScreen(plantId: plant.id.toString())));
-      },
-      optionsBuilder: (textEditingValue) {
-        return widget.plantList.where((element) => element.name!
-            .toLowerCase()
-            .contains(textEditingValue.text.toLowerCase()));
-      },
-      displayStringForOption: (Plants plant) => plant.name.toString(),
-      fieldViewBuilder: (BuildContext context,
-          TextEditingController textEditingControllerRest,
-          FocusNode fieldFocusNode,
-          VoidCallback onFieldSubmitted) {
-        textEditingController = textEditingControllerRest;
-        return TextField(
-            autofocus: true,
-            controller: textEditingController,
-            focusNode: fieldFocusNode,
-            textAlign: TextAlign.left,
-            maxLines: 1,
-            onChanged: (value) {},
-            decoration: InputDecoration(
-                hintText: "Search Plants",
-                hintStyle: TextStyle(color: Colors.white.withOpacity(.5)),
-                border: InputBorder.none),
-            style: GoogleFonts.nunito(
-                textStyle: const TextStyle(
-              fontWeight: FontWeight.w400,
-              decoration: TextDecoration.none,
-              fontSize: 18,
-              color: Colors.white,
-            )));
-      },
-    ));
+          onSelected: (Plants plant) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        PlantScreen(plantId: plant.id.toString())));
+            setState(() {
+              isSearch= false;
+            });
+          },
+          optionsBuilder: (textEditingValue) {
+            return plantsList.where((element) => element.name!
+                .toLowerCase()
+                .contains(textEditingValue.text.toLowerCase()));
+          },
+          displayStringForOption: (Plants plant) => plant.name.toString(),
+          fieldViewBuilder: (BuildContext context,
+              TextEditingController textEditingControllerRest,
+              FocusNode fieldFocusNode,
+              VoidCallback onFieldSubmitted) {
+            textEditingController = textEditingControllerRest;
+            return TextField(
+                autofocus: true,
+                controller: textEditingController,
+                focusNode: fieldFocusNode,
+                textAlign: TextAlign.left,
+                maxLines: 1,
+                onChanged: (value) {},
+                decoration: InputDecoration(
+                    hintText: "Search Plants",
+                    hintStyle: TextStyle(color: Colors.white.withOpacity(.5)),
+                    border: InputBorder.none),
+                style: GoogleFonts.nunito(
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.w400,
+                      decoration: TextDecoration.none,
+                      fontSize: 18,
+                      color: Colors.white,
+                    )));
+          },
+        ));
   }
+
 }

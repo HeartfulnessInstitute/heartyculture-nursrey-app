@@ -51,6 +51,7 @@ class Plants {
   dynamic origin;
   dynamic canopyType;
   dynamic economicImportance;
+  dynamic waterFrequency;
   List<int>? plantHabitImage;
   List<int>? plantStemImage;
   List<int>? plantLeafImage;
@@ -73,6 +74,7 @@ class Plants {
     canopyType = json["x_CanopyType"];
     vegetationType= json['vegetation_type'];
     economicImportance= json['x_EconomicValue'];
+    waterFrequency= json['x_Waterfrequency'];
     if(json['plant_habit_image']!=null){
       plantHabitImage = json['plant_habit_image'].cast<int>();
     }
@@ -104,13 +106,16 @@ class Plants {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['name'] = name;
-    data['categ_id'] = category!.toJson();
+    if(data['categ_id']!=null){
+      data['categ_id'] = category!.toJson();
+    }
     data['vegetation_type']=vegetationType;
     data['x_EconomicImportance']=economicImportance;
     data['plant_habit_image'] = plantHabitImage;
     data['plant_stem_image'] = plantStemImage;
     data['plant_leaf_image'] = plantLeafImage;
     data['plant_inflorescence_image'] =  plantInflorescenceImage;
+    data['x_Waterfrequency'] = waterFrequency;
     data['plant_flower_image'] = plantFlowerImage;
     if (attributeLineIds != null) {
       data['attribute_line_ids'] =
