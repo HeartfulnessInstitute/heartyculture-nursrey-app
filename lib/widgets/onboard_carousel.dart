@@ -51,7 +51,7 @@ class _OnboardCarouselState extends State<OnboardCarousel> {
                   )),
             ),
         Padding(padding: EdgeInsets.all(15), child: Text(
-              "More than 10 million tress planted including with healing forest across the country",
+              "More than 10 million tress planted including healing forests across the country",
               textAlign: TextAlign.center,
               style: GoogleFonts.nunito(
                   textStyle: const TextStyle(
@@ -80,7 +80,7 @@ class _OnboardCarouselState extends State<OnboardCarousel> {
                   )),
             ),
             Padding(padding: EdgeInsets.all(15), child: Text(
-              "Wide range of plants available including Exotic, Endangered & Native species",
+              "Wide range of plants available including Native, Endangered & Exotic Species",
               textAlign: TextAlign.center,
               style: GoogleFonts.nunito(
                   textStyle: const TextStyle(
@@ -109,7 +109,7 @@ class _OnboardCarouselState extends State<OnboardCarousel> {
                   )),
             ),
         Padding(padding: EdgeInsets.all(15), child: Text(
-              "Handled by Doctorates, Master Gardeners & Horticulturists",
+              "Handled by Doctorates, Master Gardeners, Horticulturists & Skilled people",
               textAlign: TextAlign.center,
               style: GoogleFonts.nunito(
                   textStyle: const TextStyle(

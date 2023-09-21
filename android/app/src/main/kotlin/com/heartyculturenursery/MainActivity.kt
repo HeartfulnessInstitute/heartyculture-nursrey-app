@@ -1,4 +1,4 @@
-package com.heartyculturenursery.hcn_flutter
+package com.heartyculturenursery
 
 import io.flutter.embedding.android.FlutterActivity
 

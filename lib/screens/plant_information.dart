@@ -473,7 +473,7 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                                                 )),
                                           ),
                                           Text(
-                                            "${widget.plant.waterFrequency.toString()} / Week",
+                                            "${widget.plant.waterFrequency.toString()} Days / Week",
                                             style: GoogleFonts.nunito(
                                                 textStyle: const TextStyle(
                                                   fontSize: 18,

@@ -98,24 +98,32 @@ class _PlantScreenState extends State<PlantScreen> {
                             margin: const EdgeInsets.only(top: 10, bottom: 10),
                             child: Column(
                               children: [
-                                Text(
-                                  plants!.name.toString().split('|')[0].trim(),
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.nunito(
-                                      textStyle: const TextStyle(
-                                    fontSize: 32,
-                                    color: Color(0xff212121),
-                                    fontWeight: FontWeight.w700,
-                                  )),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+                                  child: Text(
+                                    plants!.name.toString().split('|')[0].trim(),
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                    style: GoogleFonts.nunito(
+                                        textStyle:  TextStyle(
+                                      fontSize: MediaQuery.of(context).size.height*.03,
+                                      color: Color(0xff212121),
+                                      fontWeight: FontWeight.w700,
+                                    )),
+                                  ),
                                 ),
-                                Text(
-                                  "(${plants!.name.toString().split('|')[1].trim()})",
-                                  style: GoogleFonts.nunito(
-                                      textStyle: const TextStyle(
-                                    fontSize: 18,
-                                    color: Color(0xff212121),
-                                    fontWeight: FontWeight.w400,
-                                  )),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+                                  child: Text(
+                                    "(${plants!.name.toString().split('|')[1].trim()})",
+                                    style: GoogleFonts.nunito(
+                                        textStyle:  TextStyle(
+                                      fontSize: MediaQuery.of(context).size.height*.02,
+                                      color: Color(0xff212121),
+                                      fontWeight: FontWeight.w400,
+                                    )),
+                                  ),
                                 ),
                               ],
                             ),
@@ -161,7 +169,7 @@ class _PlantScreenState extends State<PlantScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(50.0)))),
                                 child: Text(
-                                  plantPresent!=null?"Remove from my plants":"Add to my plant",
+                                  plantPresent!=null?"Remove from 'My Plants'":"Add to 'My Plants'",
                                   style: GoogleFonts.nunito(
                                       textStyle: TextStyle(
                                     fontSize: 18,
@@ -301,7 +309,7 @@ class _PlantScreenState extends State<PlantScreen> {
       //error
     }
   }
-  
+
   void showToast(String message){
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(message,

@@ -308,16 +308,16 @@ class _ContactScreenState extends State<ContactScreen> {
   String url() {
     if (Platform.isAndroid) {
       // add the [https]
-      return "https://wa.me/7396581213/?text=${Uri.parse("Hello")}"; // new line
+      return "https://wa.me/918328181265/?text=${Uri.parse("Hi Heartyculture Nursery")}"; // new line
     } else {
       // add the [https]
-      return "https://api.whatsapp.com/send?phone=7396581213=${Uri.parse("Hello")}"; // new line
+      return "https://api.whatsapp.com/send?phone=918328181265=${Uri.parse("Hi Heartyculture Nursery")}"; // new line
     }
   }
 
   final Uri params = Uri(
     scheme: 'mailto',
-    path: 'Care@heartyculturenursery.com',
+    path: 'care@heartyculturenursery.com',
     query: 'subject=', //add subject and body here
   );
 }
