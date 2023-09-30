@@ -51,7 +51,7 @@ class _OnboardCarouselState extends State<OnboardCarousel> {
                   )),
             ),
         Padding(padding: EdgeInsets.all(15), child: Text(
-              "More than 10 million tress planted including healing forests across the country",
+              "More than 10 million trees planted including healing forests across the country",
               textAlign: TextAlign.center,
               style: GoogleFonts.nunito(
                   textStyle: const TextStyle(
