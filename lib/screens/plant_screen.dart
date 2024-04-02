@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../notifications/notification_controller.dart';
 import '../preference_storage/fertilizer_preference.dart';
+import 'all_plants_screen.dart';
 import 'plant_information.dart';
 import 'package:provider/provider.dart';
 
@@ -67,7 +68,7 @@ class _PlantScreenState extends State<PlantScreen> {
                       margin: const EdgeInsets.only(top: 5),
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => AllPlantsScreen()));
                         },
                         style: ElevatedButton.styleFrom(
                           shape: const CircleBorder(),
@@ -243,7 +244,7 @@ class _PlantScreenState extends State<PlantScreen> {
                 ],
               )
             : isErrorInAPI
-                ? const Center(child: Text("Something went wrong!"))
+                ? const Center(child: Text("Something went wrong! Plant ID not valid"))
                 : Center(
                     child: CircularProgressIndicator(
                       color: Theme.of(context).primaryColor,

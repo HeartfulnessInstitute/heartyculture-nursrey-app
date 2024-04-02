@@ -118,30 +118,8 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
               height: MediaQuery.of(context).size.height / 2,
               fit: BoxFit.cover,
             ),*/
-            Positioned(
-              top: 0,
-              right: 0,
-              child: Container(
-                margin: const EdgeInsets.only(top: 5),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: const CircleBorder(),
-                    padding: const EdgeInsets.all(8),
-                    backgroundColor: Colors.black.withOpacity(.5),
-                    // <-- Button color
-                    foregroundColor: Colors.white, // <-- Splash color
-                  ),
-                  child: Icon(
-                    Icons.adaptive.share,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                ),
-              ),
-            ),
+
+
             Column(
               children: [
                 Expanded(
@@ -599,7 +577,59 @@ class _PlantInformationScreenState extends State<PlantInformationScreen> {
                       ),
                     ),
               ],
-            )
+            ),
+
+            Positioned(
+              top: 0,
+              left: 0,
+              child: Container(
+                margin: const EdgeInsets.only(top: 5),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(8),
+                    backgroundColor: Colors.black.withOpacity(.5),
+                    // <-- Button color
+                    foregroundColor: Colors.white, // <-- Splash color
+                  ),
+                  child: Icon(
+                    Icons.adaptive.arrow_back,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                ),
+              ),
+            ),
+            //
+            // Positioned(
+            //   top: 40,
+            //   right: 0,
+            //   child: Container(
+            //     margin: const EdgeInsets.only(top: 5),
+            //     child: ElevatedButton(
+            //       onPressed: () {
+            //         Navigator.of(context).pop();
+            //       },
+            //       style: ElevatedButton.styleFrom(
+            //         shape: const CircleBorder(),
+            //         padding: const EdgeInsets.all(8),
+            //         backgroundColor: Colors.black.withOpacity(.5),
+            //         // <-- Button color
+            //         foregroundColor: Colors.white, // <-- Splash color
+            //       ),
+            //       child: Icon(
+            //         Icons.adaptive.share,
+            //         color: Colors.white,
+            //         size: 24,
+            //       ),
+            //     ),
+            //   ),
+            // ),
+
+
 
 
           ],

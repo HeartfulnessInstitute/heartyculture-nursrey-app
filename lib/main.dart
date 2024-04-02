@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hcn_flutter/screens/all_plants_screen.dart';
 import 'package:hcn_flutter/widgets/onboard_carousel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'constants.dart';
@@ -55,6 +56,23 @@ Future<bool?> getOnBoardingStatus() async {
 final router = GoRouter(
   navigatorKey: MyApp.navigatorKey,
   routes: [
+
+    GoRoute(
+        path: '/plants',
+        builder: (context, state) {
+          var plantId = state.uri.queryParameters['id'];
+          if (plantId != null) {
+            return PlantScreen(plantId: plantId);
+          } else {
+            // Handle the case where 'id' parameter is missing or null
+            // For example, you can show an error message or navigate to a default screen
+            return             AllPlantsScreen();
+
+        }
+
+        }
+        ),
+
     GoRoute(
         path: '/',
         builder: (context, state) {
@@ -62,11 +80,6 @@ final router = GoRouter(
               ? const NurseryStore()
               : const OnboardCarousel();
         }),
-    GoRoute(
-        path: '/plant/:id',
-        builder: (context, state) {
-          var plantId = state.params['id'];
-          return PlantScreen(plantId: plantId!);
-        }),
   ],
 );
+
